@@ -1,0 +1,29 @@
+erDiagram
+    USERS ||--o{ REPORTS : owns
+    USERS ||--o{ JOBS : triggers
+    USERS ||--o{ POSTS : writes
+    USERS ||--o{ VOTES : casts
+    USERS ||--o{ ORDERS : pays
+    USERS ||--o{ CONTRIB_LINKS : mints
+    USERS ||--o{ RECOMMENDATIONS : requests
+    JOBS ||--|| REPORTS : produces
+    REPORTS ||--o{ CHAT_MESSAGES : grounds
+    DOSSIERS ||--o{ REPORTS : "cached input for"
+    CONTRIB_LINKS ||--o{ POSTS : "collects (anonymous)"
+    POSTS ||--o| PROOFS : "backed by"
+    POSTS ||--o{ VOTES : receives
+    LOCALITIES ||--o{ DOSSIERS : "1 per locality"
+    LOCALITIES ||--o{ POSTS : "scoped to"
+
+    USERS { string email PK string password_hash string plan string persona_key object profile int reports_used int credits string role }
+    REPORTS { objectid id PK string user_id string locality_slug string persona_key float composite float baseline_composite array cards array sources object narrative object cost object verifier_stats string share_token }
+    JOBS { string job_id PK string status array trace object cost string report_id }
+    DOSSIERS { string locality_slug PK object domains string updated_at }
+    POSTS { objectid id PK string locality_slug string kind string claim_type string status bool anonymous string link_token string proof_url int upvotes int downvotes }
+    CONTRIB_LINKS { string token PK string locality_slug string created_by array gaps }
+    PROOFS { string proof_id PK string data string mime }
+    ORDERS { string razorpay_order_id PK int amount string plan string status }
+    CHAT_MESSAGES { string report_id string role string content string day }
+    VOTES { string post_id string user_id int value }
+    RECOMMENDATIONS { string user_id array candidates object narrative }
+    CITY_STATS { string key PK object stats array localities }

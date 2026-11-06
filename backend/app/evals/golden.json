@@ -1,0 +1,192 @@
+{
+  "version": "2026-06-08",
+  "description": "LocalIQ golden dataset. Three synthetic localities with hand-written fact sets, frozen module scores, cross-fixture invariants, persona module matrices and the render-block contract the UI depends on. The 7 dense_urban module scores marked in the rubric doc were hand-computed; every other frozen number is a regression baseline captured from a verified run and must not drift without an explicit rubric change.",
+  "sample_size": 25,
+  "persona_spread_min": 3,
+  "saturation_constants": {"nightlife": 25, "restaurant": 110, "parks": 110, "schools": 70},
+
+  "arithmetic": [
+    {"fn": "saturating", "args": [0, 10], "expect": 0.0},
+    {"fn": "distance_score", "args": [500, 800, 4000], "expect": 100.0},
+    {"fn": "distance_score", "args": [9000, 800, 4000], "expect": 0.0},
+    {"fn": "distance_score", "args": [null, 1, 2], "expect": null},
+    {"fn": "aqi_to_score", "args": [0], "expect": 100.0},
+    {"fn": "aqi_to_score", "args": [100], "expect": 70.0},
+    {"fn": "aqi_to_score", "args": [500], "expect": 0.0}
+  ],
+
+  "cpcb": [
+    {"components": {"pm2_5": 60, "pm10": 100, "no2": 40, "so2": 10, "co": 500, "o3": 30},
+     "expect_aqi": 100, "expect_dominant": "pm2_5", "expect_band": "Satisfactory"},
+    {"components": {"pm2_5": 15, "pm10": 30, "no2": 12, "so2": 4, "co": 300, "o3": 20},
+     "expect_aqi": 30, "expect_dominant": "pm10", "expect_band": "Good"},
+    {"components": {"pm2_5": 180, "pm10": 260, "no2": 70, "so2": 20, "co": 2200, "o3": 60},
+     "expect_aqi": 347, "expect_dominant": "pm2_5", "expect_band": "Very Poor"}
+  ],
+
+  "fixtures": {
+    "dense_urban": {
+      "note": "Well-connected inner-ring locality: metro at 900 m, dense amenity mesh, Satisfactory air.",
+      "raw": {"geo": {"ok": true},
+              "air": {"cpcb_aqi": 96, "dominant_label": "PM2.5", "band": {"band": "Satisfactory"}}},
+      "facts": {
+        "metro_distance": {"key": "metro_distance", "value": 900, "module": "commute", "source_type": "computed"},
+        "rail_distance": {"key": "rail_distance", "value": 3000, "module": "commute", "source_type": "computed"},
+        "bus_stops": {"key": "bus_stops", "value": 14, "module": "commute", "source_type": "computed"},
+        "count_cafe": {"key": "count_cafe", "value": 22, "module": "nightlife", "source_type": "computed",
+                       "detail": [{"name": "Cafe A", "distance_m": 210}]},
+        "count_bar": {"key": "count_bar", "value": 9, "module": "nightlife", "source_type": "computed"},
+        "count_restaurant": {"key": "count_restaurant", "value": 60, "module": "food", "source_type": "computed"},
+        "cuisine_variety": {"key": "cuisine_variety", "value": 12, "module": "food", "source_type": "computed"},
+        "count_school": {"key": "count_school", "value": 10, "module": "schools", "source_type": "computed",
+                         "detail": [{"name": "School A", "distance_m": 640}]},
+        "count_preschool": {"key": "count_preschool", "value": 6, "module": "schools", "source_type": "computed"},
+        "count_park": {"key": "count_park", "value": 5, "module": "parks", "source_type": "computed",
+                       "detail": [{"name": "Park A", "distance_m": 400}]},
+        "count_playground": {"key": "count_playground", "value": 2, "module": "parks", "source_type": "computed"},
+        "count_hospital": {"key": "count_hospital", "value": 3, "module": "healthcare", "source_type": "computed",
+                           "detail": [{"name": "Hospital A", "distance_m": 1100}]},
+        "count_clinic": {"key": "count_clinic", "value": 8, "module": "healthcare", "source_type": "computed"},
+        "count_pharmacy": {"key": "count_pharmacy", "value": 11, "module": "healthcare", "source_type": "computed"},
+        "count_supermarket": {"key": "count_supermarket", "value": 6, "module": "daily_needs", "source_type": "computed"},
+        "count_convenience": {"key": "count_convenience", "value": 9, "module": "daily_needs", "source_type": "computed"},
+        "count_market": {"key": "count_market", "value": 1, "module": "daily_needs", "source_type": "computed"},
+        "count_atm": {"key": "count_atm", "value": 7, "module": "daily_needs", "source_type": "computed"},
+        "count_gym": {"key": "count_gym", "value": 6, "module": "fitness", "source_type": "computed"},
+        "count_pool": {"key": "count_pool", "value": 1, "module": "fitness", "source_type": "computed"},
+        "count_worship": {"key": "count_worship", "value": 9, "module": "worship", "source_type": "computed"},
+        "count_vet": {"key": "count_vet", "value": 2, "module": "pet_friendly", "source_type": "computed"},
+        "count_petshop": {"key": "count_petshop", "value": 2, "module": "pet_friendly", "source_type": "computed"},
+        "count_coworking": {"key": "count_coworking", "value": 3, "module": "internet_wfh", "source_type": "computed"},
+        "count_police": {"key": "count_police", "value": 2, "module": "safety_day", "source_type": "computed",
+                         "detail": [{"name": "Police A", "distance_m": 1200}]},
+        "major_roads": {"key": "major_roads", "value": 4, "module": "noise", "source_type": "computed"},
+        "media_incidents": {"key": "media_incidents", "value": 6, "module": "safety_day", "source_type": "media"}
+      }
+    },
+
+    "sparse_suburb": {
+      "note": "Outer-ring locality: no metro within 6 km, thin amenity mesh, Moderate air. Every geo signal is strictly worse than dense_urban except noise, where fewer arterial roads is a genuine win.",
+      "raw": {"geo": {"ok": true},
+              "air": {"cpcb_aqi": 168, "dominant_label": "PM10", "band": {"band": "Moderate"}}},
+      "facts": {
+        "metro_distance": {"key": "metro_distance", "value": 6500, "module": "commute", "source_type": "computed"},
+        "rail_distance": {"key": "rail_distance", "value": 9000, "module": "commute", "source_type": "computed"},
+        "bus_stops": {"key": "bus_stops", "value": 3, "module": "commute", "source_type": "computed"},
+        "count_cafe": {"key": "count_cafe", "value": 3, "module": "nightlife", "source_type": "computed",
+                       "detail": [{"name": "Filter Coffee Corner", "distance_m": 950}]},
+        "count_bar": {"key": "count_bar", "value": 1, "module": "nightlife", "source_type": "computed"},
+        "count_restaurant": {"key": "count_restaurant", "value": 12, "module": "food", "source_type": "computed"},
+        "cuisine_variety": {"key": "cuisine_variety", "value": 4, "module": "food", "source_type": "computed"},
+        "count_school": {"key": "count_school", "value": 2, "module": "schools", "source_type": "computed",
+                         "detail": [{"name": "Government Higher Primary School", "distance_m": 1800}]},
+        "count_preschool": {"key": "count_preschool", "value": 1, "module": "schools", "source_type": "computed"},
+        "count_park": {"key": "count_park", "value": 1, "module": "parks", "source_type": "computed",
+                       "detail": [{"name": "Ward Park", "distance_m": 1400}]},
+        "count_playground": {"key": "count_playground", "value": 0, "module": "parks", "source_type": "computed"},
+        "count_hospital": {"key": "count_hospital", "value": 0, "module": "healthcare", "source_type": "computed"},
+        "count_clinic": {"key": "count_clinic", "value": 1, "module": "healthcare", "source_type": "computed",
+                         "detail": [{"name": "Sri Clinic", "distance_m": 2100}]},
+        "count_pharmacy": {"key": "count_pharmacy", "value": 2, "module": "healthcare", "source_type": "computed"},
+        "count_supermarket": {"key": "count_supermarket", "value": 1, "module": "daily_needs", "source_type": "computed"},
+        "count_convenience": {"key": "count_convenience", "value": 2, "module": "daily_needs", "source_type": "computed"},
+        "count_market": {"key": "count_market", "value": 0, "module": "daily_needs", "source_type": "computed"},
+        "count_atm": {"key": "count_atm", "value": 1, "module": "daily_needs", "source_type": "computed"},
+        "count_gym": {"key": "count_gym", "value": 1, "module": "fitness", "source_type": "computed"},
+        "count_pool": {"key": "count_pool", "value": 0, "module": "fitness", "source_type": "computed"},
+        "count_worship": {"key": "count_worship", "value": 2, "module": "worship", "source_type": "computed"},
+        "count_vet": {"key": "count_vet", "value": 0, "module": "pet_friendly", "source_type": "computed"},
+        "count_petshop": {"key": "count_petshop", "value": 0, "module": "pet_friendly", "source_type": "computed"},
+        "count_coworking": {"key": "count_coworking", "value": 0, "module": "internet_wfh", "source_type": "computed"},
+        "count_police": {"key": "count_police", "value": 1, "module": "safety_day", "source_type": "computed",
+                         "detail": [{"name": "Outpost", "distance_m": 3200}]},
+        "major_roads": {"key": "major_roads", "value": 1, "module": "noise", "source_type": "computed"},
+        "media_incidents": {"key": "media_incidents", "value": 2, "module": "safety_day", "source_type": "media"}
+      }
+    },
+
+    "no_data": {
+      "note": "Cold start: nothing collected. Every module must report absence, none may be estimated.",
+      "raw": {},
+      "facts": {}
+    }
+  },
+
+  "expected_scores": {
+    "dense_urban": {
+      "air_quality": 71.2,
+      "commute": 74.9,
+      "nightlife": 71.1,
+      "food": 37.2,
+      "daily_needs": 25.0,
+      "fitness": 13.1,
+      "worship": 13.9
+    },
+    "sparse_suburb": {
+      "air_quality": 53.1,
+      "commute": 2.0,
+      "safety_day": 60.5,
+      "safety_night": 54.0,
+      "nightlife": 14.8,
+      "food": 10.1,
+      "schools": 2.6,
+      "parks": 0.5,
+      "healthcare": 4.5,
+      "daily_needs": 4.9,
+      "fitness": 2.0,
+      "worship": 3.3,
+      "noise": 98.2,
+      "internet_wfh": 49.1,
+      "pet_friendly": 0.2,
+      "investment": 2.0
+    }
+  },
+
+  "expected_absent": {
+    "dense_urban": ["water", "power", "cost", "infrastructure"],
+    "sparse_suburb": ["water", "power", "cost", "infrastructure"],
+    "no_data": ["air_quality", "commute", "safety_day", "safety_night", "nightlife", "food",
+                "schools", "parks", "healthcare", "daily_needs", "fitness", "worship", "water",
+                "power", "noise", "internet_wfh", "pet_friendly", "cost", "infrastructure",
+                "investment"]
+  },
+
+  "invariants": [
+    {"module": "air_quality", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "commute", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "nightlife", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "food", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "schools", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "parks", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "healthcare", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "daily_needs", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "fitness", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "worship", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "pet_friendly", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "internet_wfh", "higher": "dense_urban", "lower": "sparse_suburb"},
+    {"module": "noise", "higher": "sparse_suburb", "lower": "dense_urban"}
+  ],
+
+  "persona_modules": {
+    "bachelor": {"includes": ["nightlife", "food", "internet_wfh", "cost"],
+                 "excludes": ["schools", "parks", "healthcare"]},
+    "student": {"includes": ["cost", "nightlife", "commute"], "excludes": ["schools", "investment"]},
+    "family_kids": {"includes": ["schools", "parks", "healthcare", "noise"],
+                    "excludes": ["nightlife", "investment"]},
+    "elderly": {"includes": ["healthcare", "worship", "parks", "noise"],
+                "excludes": ["nightlife", "internet_wfh"]},
+    "wfh_pro": {"includes": ["internet_wfh", "noise", "air_quality"], "excludes": ["schools"]},
+    "investor": {"includes": ["investment", "infrastructure", "schools"], "excludes": ["nightlife"]}
+  },
+
+  "block_contract": {
+    "gauge": ["value", "min", "max"],
+    "trend_line": ["series", "lines"],
+    "stat_grid": ["stats"],
+    "distance_list": ["items"],
+    "incident_list": ["items"],
+    "quote_list": ["items"],
+    "timeline": ["events"],
+    "text_block": ["body"]
+  }
+}

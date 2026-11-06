@@ -1,0 +1,258 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+@import "./palette.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --background: 247 248 251;
+        --foreground: 17 24 39;
+        --surface: 255 255 255;
+        --surface-2: 242 245 250;
+        --card: 255 255 255;
+        --card-foreground: 17 24 39;
+        --popover: 255 255 255;
+        --popover-foreground: 17 24 39;
+        --primary: 79 70 229;
+        --primary-foreground: 255 255 255;
+        --secondary: 241 245 249;
+        --secondary-foreground: 15 23 42;
+        --muted: 241 245 249;
+        --muted-foreground: 100 116 139;
+        --accent: 238 242 255;
+        --accent-foreground: 49 46 129;
+        --destructive: 220 38 38;
+        --destructive-foreground: 255 255 255;
+        --border: 226 232 240;
+        --input: 226 232 240;
+        --ring: 99 102 241;
+        --radius: 0.35rem;
+
+        --dot: 15 23 42 / 0.07;
+        --wash-1: 99 102 241 / 0.13;
+        --wash-2: 20 184 166 / 0.11;
+        --wash-3: 244 114 182 / 0.08;
+        --glass: 255 255 255 / 0.78;
+        --hairline: 15 23 42 / 0.06;
+        --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(15 23 42 / 0.12);
+        --shadow-lift: 0 2px 4px rgb(15 23 42 / 0.05), 0 18px 38px -18px rgb(79 70 229 / 0.35);
+    }
+
+    .dark {
+        --background: 9 9 12;
+        --foreground: 250 250 250;
+        --surface: 19 19 23;
+        --surface-2: 27 27 31;
+        --card: 19 19 23;
+        --card-foreground: 250 250 250;
+        --popover: 18 18 21;
+        --popover-foreground: 250 250 250;
+        --primary: 99 102 241;
+        --primary-foreground: 255 255 255;
+        --secondary: 33 33 37;
+        --secondary-foreground: 244 244 245;
+        --muted: 30 30 34;
+        --muted-foreground: 161 161 170;
+        --accent: 38 38 43;
+        --accent-foreground: 250 250 250;
+        --destructive: 239 68 68;
+        --destructive-foreground: 250 250 250;
+        --border: 39 39 42;
+        --input: 39 39 42;
+        --ring: 99 102 241;
+
+        --dot: 255 255 255 / 0.06;
+        --wash-1: 99 102 241 / 0.1;
+        --wash-2: 20 184 166 / 0.06;
+        --wash-3: 244 114 182 / 0.04;
+        --glass: 9 9 12 / 0.72;
+        --hairline: 255 255 255 / 0.07;
+        --shadow-card: 0 1px 0 rgb(255 255 255 / 0.03);
+        --shadow-lift: 0 18px 38px -18px rgb(99 102 241 / 0.45);
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    html {
+        scroll-behavior: smooth;
+    }
+    body {
+        @apply bg-background text-foreground;
+        margin: 0;
+        font-family: "IBM Plex Sans", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-image:
+            radial-gradient(
+                760px circle at 8% -6%,
+                rgb(var(--wash-1)),
+                transparent 58%
+            ),
+            radial-gradient(
+                680px circle at 96% 2%,
+                rgb(var(--wash-2)),
+                transparent 55%
+            ),
+            radial-gradient(
+                720px circle at 48% 108%,
+                rgb(var(--wash-3)),
+                transparent 58%
+            ),
+            radial-gradient(circle at 1px 1px, rgb(var(--dot)) 1px, transparent 0);
+        background-size:
+            auto,
+            auto,
+            auto,
+            44px 44px;
+        background-attachment: fixed, fixed, fixed, scroll;
+        background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+        font-family: "Outfit", sans-serif;
+        letter-spacing: -0.025em;
+    }
+    ::selection {
+        background: rgb(var(--c-indigo-500) / 0.25);
+    }
+    ::-webkit-scrollbar {
+        width: 9px;
+        height: 9px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: rgb(var(--c-zinc-800));
+        border-radius: 9px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgb(var(--c-zinc-700));
+    }
+}
+
+@layer components {
+    .mono {
+        font-family: "IBM Plex Mono", monospace;
+        font-variant-numeric: tabular-nums;
+    }
+    .overline {
+        font-family: "IBM Plex Mono", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-size: 0.625rem;
+        font-weight: 600;
+    }
+    .glass {
+        backdrop-filter: blur(20px) saturate(1.6);
+        -webkit-backdrop-filter: blur(20px) saturate(1.6);
+        background: rgb(var(--glass));
+        box-shadow: inset 0 1px 0 0 rgb(var(--hairline));
+    }
+    .grid-skeleton {
+        border-left: 1px solid rgb(var(--border));
+        border-top: 1px solid rgb(var(--border));
+        background: rgb(var(--surface));
+    }
+    .grid-skeleton > * {
+        border-right: 1px solid rgb(var(--border));
+        border-bottom: 1px solid rgb(var(--border));
+    }
+    .lift {
+        box-shadow: var(--shadow-card);
+        transition:
+            transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+            box-shadow 220ms ease,
+            border-color 200ms ease,
+            background-color 200ms ease;
+    }
+    .lift:hover {
+        transform: translateY(-3px);
+        border-color: rgb(var(--c-indigo-500) / 0.55);
+        box-shadow: var(--shadow-lift);
+    }
+    .rule {
+        background-image: repeating-linear-gradient(
+            90deg,
+            rgb(var(--border)) 0 6px,
+            transparent 6px 12px
+        );
+        height: 1px;
+    }
+    .panel {
+        box-shadow: var(--shadow-card);
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+
+@layer utilities {
+    .overline {
+        text-decoration-line: none;
+    }
+}
+
+@keyframes lq-in {    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+.lq-in {
+    animation: lq-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes lq-blink {
+    0%,
+    49% {
+        opacity: 1;
+    }
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+.caret::after {
+    content: "\2588";
+    animation: lq-blink 1s steps(1) infinite;
+    margin-left: 2px;
+    color: rgb(var(--c-indigo-500));
+}
+
+@keyframes lq-scan {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(300%);
+    }
+}
+.scan::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 33%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgb(var(--c-indigo-500) / 0.45),
+        transparent
+    );
+    animation: lq-scan 1.6s linear infinite;
+}

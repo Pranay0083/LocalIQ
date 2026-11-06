@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant SPA as React SPA
+    participant API as FastAPI
+    participant G as LangGraph run
+    participant M as MongoDB
+    participant X as External sources
+
+    U->>SPA: pick locality + persona
+    SPA->>API: POST /api/reports/generate
+    API->>API: entitlement check (free limit / Pro)
+    API->>M: insert job {status: queued}
+    API-->>SPA: {job_id}
+    SPA->>SPA: navigate to /app/generating/:jobId
+    loop every 1.2s
+        SPA->>API: GET /api/reports/job/:id
+        API-->>SPA: live agent trace
+    end
+    API->>G: run_report() background task
+    G->>M: read dossier, keep fresh layers
+    G->>X: fetch only stale layers
+    G->>G: verify → score → synthesise → present
+    G->>M: upsert dossier · insert report · write job.cost
+    SPA->>API: GET /api/reports/:id
+    API-->>SPA: cards + narrative + citations + cost

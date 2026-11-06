@@ -1,0 +1,441 @@
+{
+  "dataset_version": "2026-06-08",
+  "summary": {
+    "total": 66,
+    "passed": 66,
+    "failed": 0,
+    "suites": {
+      "arithmetic": {
+        "total": 9,
+        "passed": 9
+      },
+      "air": {
+        "total": 3,
+        "passed": 3
+      },
+      "scoring": {
+        "total": 26,
+        "passed": 26
+      },
+      "invariants": {
+        "total": 14,
+        "passed": 14
+      },
+      "persona": {
+        "total": 8,
+        "passed": 8
+      },
+      "production": {
+        "total": 6,
+        "passed": 6
+      }
+    },
+    "persona_scores": {
+      "bachelor": 54,
+      "student": 53,
+      "family_kids": 51,
+      "elderly": 52,
+      "wfh_pro": 55,
+      "investor": 58
+    },
+    "baseline": 52
+  },
+  "results": [
+    {
+      "suite": "arithmetic",
+      "check": "saturating(0, 10)",
+      "status": "pass",
+      "detail": "expected=0.0 actual=0.0"
+    },
+    {
+      "suite": "arithmetic",
+      "check": "distance_score(500, 800, 4000)",
+      "status": "pass",
+      "detail": "expected=100.0 actual=100.0"
+    },
+    {
+      "suite": "arithmetic",
+      "check": "distance_score(9000, 800, 4000)",
+      "status": "pass",
+      "detail": "expected=0.0 actual=0.0"
+    },
+    {
+      "suite": "arithmetic",
+      "check": "distance_score(None, 1, 2)",
+      "status": "pass",
+      "detail": "expected=None actual=None"
+    },
+    {
+      "suite": "arithmetic",
+      "check": "aqi_to_score(0)",
+      "status": "pass",
+      "detail": "expected=100.0 actual=100.0"
+    },
+    {
+      "suite": "arithmetic",
+      "check": "aqi_to_score(100)",
+      "status": "pass",
+      "detail": "expected=70.0 actual=70.0"
+    },
+    {
+      "suite": "arithmetic",
+      "check": "aqi_to_score(500)",
+      "status": "pass",
+      "detail": "expected=0.0 actual=0.0"
+    },
+    {
+      "suite": "arithmetic",
+      "check": "saturating is monotonic",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "suite": "arithmetic",
+      "check": "saturation constants calibrated on all 34 localities",
+      "status": "pass",
+      "detail": "K={'nightlife': 25, 'restaurant': 110, 'cuisine': 40, 'schools': 70, 'parks': 110, 'healthcare': 85, 'pharmacy': 20, 'daily_needs': 80, 'fitness': 50, 'worship': 60, 'pets': 5, 'coworking': 8, 'bus': 35, 'infra': 5}"
+    },
+    {
+      "suite": "air",
+      "check": "CPCB worst-sub-index -> 100 (Satisfactory)",
+      "status": "pass",
+      "detail": "aqi=100 dominant=pm2_5 band=Satisfactory"
+    },
+    {
+      "suite": "air",
+      "check": "CPCB worst-sub-index -> 30 (Good)",
+      "status": "pass",
+      "detail": "aqi=30 dominant=pm10 band=Good"
+    },
+    {
+      "suite": "air",
+      "check": "CPCB worst-sub-index -> 347 (Very Poor)",
+      "status": "pass",
+      "detail": "aqi=347 dominant=pm2_5 band=Very Poor"
+    },
+    {
+      "suite": "scoring",
+      "check": "dense_urban.air_quality == 71.2",
+      "status": "pass",
+      "detail": "actual=71.2"
+    },
+    {
+      "suite": "scoring",
+      "check": "dense_urban.commute == 74.9",
+      "status": "pass",
+      "detail": "actual=74.9"
+    },
+    {
+      "suite": "scoring",
+      "check": "dense_urban.nightlife == 71.1",
+      "status": "pass",
+      "detail": "actual=71.1"
+    },
+    {
+      "suite": "scoring",
+      "check": "dense_urban.food == 37.2",
+      "status": "pass",
+      "detail": "actual=37.2"
+    },
+    {
+      "suite": "scoring",
+      "check": "dense_urban.daily_needs == 25.0",
+      "status": "pass",
+      "detail": "actual=25.0"
+    },
+    {
+      "suite": "scoring",
+      "check": "dense_urban.fitness == 13.1",
+      "status": "pass",
+      "detail": "actual=13.1"
+    },
+    {
+      "suite": "scoring",
+      "check": "dense_urban.worship == 13.9",
+      "status": "pass",
+      "detail": "actual=13.9"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.air_quality == 53.1",
+      "status": "pass",
+      "detail": "actual=53.1"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.commute == 2.0",
+      "status": "pass",
+      "detail": "actual=2.0"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.safety_day == 60.5",
+      "status": "pass",
+      "detail": "actual=60.5"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.safety_night == 54.0",
+      "status": "pass",
+      "detail": "actual=54.0"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.nightlife == 14.8",
+      "status": "pass",
+      "detail": "actual=14.8"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.food == 10.1",
+      "status": "pass",
+      "detail": "actual=10.1"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.schools == 2.6",
+      "status": "pass",
+      "detail": "actual=2.6"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.parks == 0.5",
+      "status": "pass",
+      "detail": "actual=0.5"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.healthcare == 4.5",
+      "status": "pass",
+      "detail": "actual=4.5"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.daily_needs == 4.9",
+      "status": "pass",
+      "detail": "actual=4.9"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.fitness == 2.0",
+      "status": "pass",
+      "detail": "actual=2.0"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.worship == 3.3",
+      "status": "pass",
+      "detail": "actual=3.3"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.noise == 98.2",
+      "status": "pass",
+      "detail": "actual=98.2"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.internet_wfh == 49.1",
+      "status": "pass",
+      "detail": "actual=49.1"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.pet_friendly == 0.2",
+      "status": "pass",
+      "detail": "actual=0.2"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb.investment == 2.0",
+      "status": "pass",
+      "detail": "actual=2.0"
+    },
+    {
+      "suite": "scoring",
+      "check": "dense_urban: absence is never averaged away",
+      "status": "pass",
+      "detail": "unexpectedly scored: []"
+    },
+    {
+      "suite": "scoring",
+      "check": "sparse_suburb: absence is never averaged away",
+      "status": "pass",
+      "detail": "unexpectedly scored: []"
+    },
+    {
+      "suite": "scoring",
+      "check": "no_data: absence is never averaged away",
+      "status": "pass",
+      "detail": "unexpectedly scored: []"
+    },
+    {
+      "suite": "invariants",
+      "check": "air_quality: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "71.2 vs 53.1"
+    },
+    {
+      "suite": "invariants",
+      "check": "commute: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "74.9 vs 2.0"
+    },
+    {
+      "suite": "invariants",
+      "check": "nightlife: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "71.1 vs 14.8"
+    },
+    {
+      "suite": "invariants",
+      "check": "food: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "37.2 vs 10.1"
+    },
+    {
+      "suite": "invariants",
+      "check": "schools: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "38.5 vs 2.6"
+    },
+    {
+      "suite": "invariants",
+      "check": "parks: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "35.7 vs 0.5"
+    },
+    {
+      "suite": "invariants",
+      "check": "healthcare: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "50.1 vs 4.5"
+    },
+    {
+      "suite": "invariants",
+      "check": "daily_needs: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "25.0 vs 4.9"
+    },
+    {
+      "suite": "invariants",
+      "check": "fitness: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "13.1 vs 2.0"
+    },
+    {
+      "suite": "invariants",
+      "check": "worship: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "13.9 vs 3.3"
+    },
+    {
+      "suite": "invariants",
+      "check": "pet_friendly: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "45.4 vs 0.2"
+    },
+    {
+      "suite": "invariants",
+      "check": "internet_wfh: dense_urban scores above sparse_suburb",
+      "status": "pass",
+      "detail": "62.1 vs 49.1"
+    },
+    {
+      "suite": "invariants",
+      "check": "noise: sparse_suburb scores above dense_urban",
+      "status": "pass",
+      "detail": "98.2 vs 92.8"
+    },
+    {
+      "suite": "invariants",
+      "check": "scoring is deterministic across runs",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "suite": "persona",
+      "check": "bachelor: module set matches the rubric",
+      "status": "pass",
+      "detail": "missing=[] unexpected=[]"
+    },
+    {
+      "suite": "persona",
+      "check": "student: module set matches the rubric",
+      "status": "pass",
+      "detail": "missing=[] unexpected=[]"
+    },
+    {
+      "suite": "persona",
+      "check": "family_kids: module set matches the rubric",
+      "status": "pass",
+      "detail": "missing=[] unexpected=[]"
+    },
+    {
+      "suite": "persona",
+      "check": "elderly: module set matches the rubric",
+      "status": "pass",
+      "detail": "missing=[] unexpected=[]"
+    },
+    {
+      "suite": "persona",
+      "check": "wfh_pro: module set matches the rubric",
+      "status": "pass",
+      "detail": "missing=[] unexpected=[]"
+    },
+    {
+      "suite": "persona",
+      "check": "investor: module set matches the rubric",
+      "status": "pass",
+      "detail": "missing=[] unexpected=[]"
+    },
+    {
+      "suite": "persona",
+      "check": "persona weighting actually moves the composite",
+      "status": "pass",
+      "detail": "spread=7 {'bachelor': 54, 'student': 53, 'family_kids': 51, 'elderly': 52, 'wfh_pro': 55, 'investor': 58}"
+    },
+    {
+      "suite": "persona",
+      "check": "neutral baseline computes",
+      "status": "pass",
+      "detail": "baseline=52"
+    },
+    {
+      "suite": "production",
+      "check": "every render block matches the UI contract",
+      "status": "pass",
+      "detail": "cards=314 bad=[]"
+    },
+    {
+      "suite": "production",
+      "check": "every media/official claim is traceable to a URL",
+      "status": "pass",
+      "detail": "citations=840 untraceable=[]"
+    },
+    {
+      "suite": "production",
+      "check": "no scored module without a citation behind it",
+      "status": "pass",
+      "detail": "uncited=[]"
+    },
+    {
+      "suite": "production",
+      "check": "an empty module never carries a score",
+      "status": "pass",
+      "detail": "ghosts=[]"
+    },
+    {
+      "suite": "production",
+      "check": "an anonymous contribution can never reach verified",
+      "status": "pass",
+      "detail": "promoted=0"
+    },
+    {
+      "suite": "production",
+      "check": "every stored card maps to a rubric module",
+      "status": "pass",
+      "detail": "stray=[]"
+    }
+  ]
+}

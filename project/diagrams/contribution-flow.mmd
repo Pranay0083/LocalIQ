@@ -1,0 +1,10 @@
+flowchart LR
+    R["Report shows a gap<br/>'Rent & Cost Band — no data'"] --> I["Owner clicks<br/>Ask residents"]
+    I --> L["POST /api/contribute/links<br/>mints /c/&lt;token&gt; with the gap list"]
+    L --> S["Resident opens the link<br/>no account needed"]
+    S --> F["Fact claim or experience<br/>optional photo proof"]
+    F --> SCRUB["PII scrub · toxicity screen<br/>25/day per link · 8/day per IP"]
+    SCRUB --> PUB["Published instantly as unverified"]
+    PUB --> V["Visible in report + community<br/>weight 0 · cannot corroborate · no credit"]
+    V --> UP{"2+ account holders post<br/>the same claim with proof?"}
+    UP -->|yes| VER["Claim becomes verified<br/>and starts moving the score"]

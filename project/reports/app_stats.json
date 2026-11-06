@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-09-03T06:25:44",
+  "collections": {
+    "chat_messages": 275,
+    "posts": 112,
+    "proofs": 31,
+    "orders": 50,
+    "recommendations": 3,
+    "traces": 0,
+    "city_stats": 1,
+    "reports": 64,
+    "votes": 48,
+    "login_attempts": 0,
+    "jobs": 33,
+    "contrib_links": 1,
+    "dossiers": 34,
+    "users": 126
+  },
+  "cost": {
+    "runs_total": 33,
+    "runs_costed": 30,
+    "tokens": {
+      "llm_calls": 119,
+      "prompt": 591847,
+      "completion": 60978,
+      "web_searches": 17
+    },
+    "models": {
+      "unrecorded": 6,
+      "gpt-5.4": 26,
+      "gpt-5.4, gpt-5.4-mini": 87
+    },
+    "total_usd": 1.0312,
+    "avg_usd_per_costed_run": 0.03437,
+    "by_locality": {
+      "Indiranagar": {
+        "runs": 15,
+        "cost": 0.56313
+      },
+      "HSR Layout": {
+        "runs": 4,
+        "cost": 0.14907
+      },
+      "Koramangala 4th Block": {
+        "runs": 3,
+        "cost": 0.06841
+      },
+      "Jayanagar": {
+        "runs": 4,
+        "cost": 0.17832
+      },
+      "Whitefield": {
+        "runs": 4,
+        "cost": 0.07227
+      }
+    }
+  },
+  "run_seconds": {
+    "n": 33,
+    "p50": 12.7,
+    "min": 8.1,
+    "max": 165.5
+  },
+  "posts_by_status": {
+    "verified": 27,
+    "pending": 77,
+    "anonymous_unverified": 8
+  }
+}

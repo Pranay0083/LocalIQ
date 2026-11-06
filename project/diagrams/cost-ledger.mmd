@@ -1,0 +1,10 @@
+flowchart LR
+    R["POST /api/reports/generate"] --> N["new_run_ledger()<br/>contextvars.ContextVar"]
+    N --> G["LangGraph run"]
+    G --> C1["synthesiser call"] --> REC["_record(model, prompt, completion, searches)"]
+    G --> C2["research extraction ×N"] --> REC
+    G --> C3["moderation screen"] --> REC
+    REC --> RL["run ledger<br/>this request only"]
+    REC --> GL["TOKEN_LEDGER<br/>process-wide → /api/traces"]
+    RL --> W["job.cost + report.cost"]
+    W --> UI["Run cost panel"]

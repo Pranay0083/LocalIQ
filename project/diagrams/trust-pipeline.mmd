@@ -1,0 +1,11 @@
+flowchart TB
+    F["Facts from all four collectors"] --> C1{"source_url present<br/>AND in the retrieved set?"}
+    C1 -->|no| D["dropped<br/>not traceable · never scored"]
+    C1 -->|yes| C2{"contradicts another fact<br/>for the same field?"}
+    C2 -->|yes| DIS["disputed<br/>both sides shown · confidence lowered"]
+    C2 -->|no| C3{"community claim?"}
+    C3 -->|anonymous| U["unverified<br/>rendered for context · weight 0"]
+    C3 -->|"1 account + proof"| P["pending<br/>weight 0"]
+    C3 -->|"2+ accounts + proof"| VF["verified<br/>enters the score"]
+    C3 -->|no| K["kept"]
+    K & VF --> SC["scorer"]

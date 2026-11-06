@@ -1,0 +1,25 @@
+flowchart TB
+    subgraph client["Browser"]
+        SPA["React 19 SPA<br/>Tailwind · shadcn/ui · sonner"]
+    end
+
+    subgraph local["Local machine"]
+        FE["frontend :3000"]
+        BE["backend :8001 FastAPI"]
+        MONGO[("MongoDB (Docker) · 14 collections")]
+    end
+
+    subgraph ext["External"]
+        OW["OpenWeather AQI"]
+        OSM["OSM Overpass"]
+        NEWS["Google News RSS + publishers"]
+        WIKI["Wikipedia REST"]
+        RED["Reddit JSON"]
+        LLM["LLM provider<br/>Groq gpt-oss · or OpenAI-compatible"]
+        RZP["Razorpay (test)"]
+    end
+
+    SPA -->|static bundle| FE
+    SPA -->|REACT_APP_BACKEND_URL| BE
+    BE <--> MONGO
+    BE --> OW & OSM & NEWS & WIKI & RED & LLM & RZP

@@ -1,0 +1,20 @@
+flowchart LR
+    START((start)) --> INTAKE
+
+    INTAKE["intake<br/>resolve locality + persona<br/>select modules<br/>fresh vs stale layers"]
+
+    INTAKE --> AIR["collect_air<br/>OpenWeather → CPCB AQI"]
+    INTAKE --> GEO["collect_geo<br/>Overpass amenities + distances"]
+    INTAKE --> WEB["collect_web<br/>safety · civic · infra · chatter"]
+    INTAKE --> COM["collect_community<br/>resident claims"]
+
+    AIR --> VER
+    GEO --> VER
+    WEB --> VER
+    COM --> VER
+
+    VER["verifier<br/>traceability gate<br/>contradictions · confidence"]
+    VER --> SCO["scorer<br/>20 modules → persona composite<br/>+ neutral baseline"]
+    SCO --> SYN["synthesizer<br/>only LLM writer<br/>strict JSON, verified facts only"]
+    SYN --> PRE["presenter<br/>typed render blocks<br/>citations + gap CTAs"]
+    PRE --> END((end))
