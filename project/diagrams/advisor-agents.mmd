@@ -1,0 +1,18 @@
+flowchart TB
+    subgraph CMP["Compare: POST /api/compare, Pro only"]
+        C1["2 or 3 locality slugs"] --> C2["run_report() per locality, force=False<br/>fresh layers reused, stale layers refreshed<br/>the synthesizer runs for each locality"]
+        C2 --> C3["compare_localities()<br/>1 chat_json() call, smart tier<br/>input: module scores only"]
+        C3 --> C4["verdict, trade-off, decider<br/>returned, not stored"]
+    end
+
+    subgraph REC["Recommend: POST /api/recommend, 1 free run, then Pro"]
+        R1["10 candidates: nearest to profile.work_locality,<br/>else localities that have a dossier first"] --> R2["_quick_dossier() for each, 3 at a time<br/>air + geo only, refreshed if stale<br/>no web research, no LLM"]
+        R2 --> R3["verify(), score_all(), composite()<br/>top 5 by persona score"]
+        R3 --> R4["recommend()<br/>1 chat_json() call, smart tier"]
+        R4 --> R5["stored in recommendations"]
+    end
+
+    subgraph CHAT["Chat: POST /api/reports/{id}/chat and /chat/stream"]
+        H1["context from the stored report:<br/>scores, cited facts, narrative, last 6 turns"] --> H2["answer_question(): chat_json()<br/>or stream_answer(): stream_chat()<br/>fast tier, max_tokens 1100"]
+        H2 --> H3["answer, used_sources, missing<br/>stored in chat_messages<br/>100 user turns per user per day"]
+    end

@@ -1,0 +1,28 @@
+sequenceDiagram
+    autonumber
+    participant SPA as ChatPanel.jsx
+    participant API as POST /chat/stream
+    participant M as MongoDB
+    participant A as advisor.stream_answer()
+    participant L as llm.stream_chat()
+    participant P as LLM provider
+
+    SPA->>API: fetch() with the Bearer token and {message}
+    API->>M: load the report, 404 unless the caller owns it
+    API->>M: count the user's turns today, 429 at 100
+    API->>M: read the last 20 turns, insert the user turn
+    API->>A: report, question, history
+    A->>A: context = module scores, up to 70 cited facts, narrative, last 6 turns
+    A->>L: prompt, fast tier, max_tokens 1100
+    L->>P: stream=True on the one active provider, no fallback
+    loop each chunk
+        P-->>L: token delta
+        L-->>A: token delta
+        A-->>API: text, minus a holdback as long as the SOURCES marker
+        API-->>SPA: data: {type: delta, text}
+    end
+    L->>L: ledger.record(model, usage) when the stream ends
+    A->>A: cut at the SOURCES marker, parse source labels and MISSING
+    A-->>API: {answer, used_sources, missing}
+    API->>M: insert the assistant turn, or delete the user turn if nothing was written
+    API-->>SPA: data: {type: done, answer, used_sources, missing}

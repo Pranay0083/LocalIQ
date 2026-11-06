@@ -30,3 +30,7 @@ test_reports/*.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Design tooling output
+.taste-skill/
+

@@ -1,26 +1,38 @@
 sequenceDiagram
     autonumber
-    participant U as User
     participant SPA as React SPA
-    participant API as FastAPI
-    participant G as LangGraph run
+    participant API as routers/reports.py
     participant M as MongoDB
-    participant X as External sources
+    participant BG as BackgroundTask
+    participant G as run_report() LangGraph
+    participant X as Sources + LLM
 
-    U->>SPA: pick locality + persona
-    SPA->>API: POST /api/reports/generate
-    API->>API: entitlement check (free limit / Pro)
-    API->>M: insert job {status: queued}
-    API-->>SPA: {job_id}
-    SPA->>SPA: navigate to /app/generating/:jobId
-    loop every 1.2s
-        SPA->>API: GET /api/reports/job/:id
-        API-->>SPA: live agent trace
+    SPA->>API: POST /api/reports/generate {locality, persona_key, force}
+    API->>M: latest report for this user + locality + persona
+    alt a report exists and force is false
+        API-->>SPA: {report_id, cached: true}, no job and no credit
+    else first run, or force is true
+        API->>API: entitlement check, 402 when no free report or credit is left
+        API->>M: insert job {status: running, trace: []}
+        API->>M: spend a credit or a free report, Pro is not charged
+        API-->>SPA: {job_id}
+        par the run
+            API->>BG: _execute_job() after the response is sent
+            BG->>G: run_report(locality, persona, profile, overrides, job_id)
+            G->>M: intake reads the dossier and lists stale layers
+            G->>X: collectors fetch only the stale layers
+            G->>M: save_domain() for each refreshed layer
+            G->>X: synthesizer, one smart-tier call
+            G->>M: every node appends a line to job.trace
+            G-->>BG: cards, narrative, scores, sources, cost
+            BG->>M: insert report, set job done + report_id + cost
+        and the Generating screen
+            loop every 1.4 s until report_id is set
+                SPA->>API: GET /api/reports/job/{job_id}
+                API->>M: read the job
+                API-->>SPA: status + trace lines
+            end
+        end
+        SPA->>API: GET /api/reports/{report_id}
+        API-->>SPA: the report document
     end
-    API->>G: run_report() background task
-    G->>M: read dossier, keep fresh layers
-    G->>X: fetch only stale layers
-    G->>G: verify → score → synthesise → present
-    G->>M: upsert dossier · insert report · write job.cost
-    SPA->>API: GET /api/reports/:id
-    API-->>SPA: cards + narrative + citations + cost

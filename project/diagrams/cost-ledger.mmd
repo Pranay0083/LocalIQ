@@ -1,10 +1,17 @@
 flowchart LR
-    R["POST /api/reports/generate"] --> N["new_run_ledger()<br/>contextvars.ContextVar"]
-    N --> G["LangGraph run"]
-    G --> C1["synthesiser call"] --> REC["_record(model, prompt, completion, searches)"]
-    G --> C2["research extraction ×N"] --> REC
-    G --> C3["moderation screen"] --> REC
-    REC --> RL["run ledger<br/>this request only"]
-    REC --> GL["TOKEN_LEDGER<br/>process-wide → /api/traces"]
-    RL --> W["job.cost + report.cost"]
-    W --> UI["Run cost panel"]
+    subgraph RUN["One report run: run_report() in agents/graph.py"]
+        N["new_run_ledger()<br/>sets a ContextVar to a fresh dict"] --> G["GRAPH.ainvoke()<br/>nodes share the same ledger dict"]
+        G --> W["collect_web<br/>research calls"]
+        G --> S["synthesizer<br/>1 call"]
+    end
+    OUT["calls outside run_report:<br/>chat, streaming chat, moderation,<br/>recommend and the compare verdict"]
+
+    W --> R["ledger.record(model, usage, searches, free)<br/>prompt/1e6 x rate_in + completion/1e6 x rate_out<br/>+ searches/1000 x 6.5"]
+    S --> R
+    OUT --> R
+    R --> RL["run ledger<br/>only inside run_report"]
+    R --> GL["TOKEN_LEDGER<br/>process-wide, in memory,<br/>reset when the backend restarts"]
+    RL --> SNAP["ledger_snapshot() after the graph returns"]
+    SNAP --> COST["report.cost, and job.cost for /generate<br/>llm_calls, web_searches, prompt_tokens,<br/>completion_tokens, model, est_cost_usd"]
+    COST --> UI["Run cost panel on the report"]
+    GL --> TR["GET /api/traces<br/>own jobs + the global ledger"]

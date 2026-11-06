@@ -1,0 +1,19 @@
+flowchart TB
+    subgraph T1["Live API: source_type live_api, trust 5"]
+        A1["OpenWeather air pollution + forecast<br/>converted to CPCB sub-indices<br/>layer air, TTL 6 h"]
+    end
+    subgraph T2["Computed: source_type computed, trust 5"]
+        A2["OpenStreetMap via Overpass<br/>counts within fixed radii, haversine distances<br/>layer geo, TTL 30 days"]
+    end
+    subgraph T3["Reported: official 4, media 3, forum 1"]
+        A3["web_research(): Groq browser_search, or the key-free pipeline<br/>Google News RSS, publisher pages, Wikipedia, Reddit<br/>LLM extracts JSON from the retrieved pages<br/>layers safety 7 d, civic 14 d, infra 60 d, chatter 7 d"]
+    end
+    subgraph T4["Community: community_verified 3, community_unverified 1"]
+        A4["Resident posts in Mongo<br/>read live on every run"]
+    end
+
+    T1 --> V["verifier"]
+    T2 --> V
+    T3 --> V
+    T4 --> V
+    V --> SC["scorer"]

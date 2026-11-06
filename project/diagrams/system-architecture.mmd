@@ -1,25 +1,38 @@
 flowchart TB
-    subgraph client["Browser"]
-        SPA["React 19 SPA<br/>Tailwind · shadcn/ui · sonner"]
+    subgraph browser["Browser"]
+        SPA["React 19 SPA<br/>CRA + craco, Tailwind, Recharts, sonner<br/>JWT kept in localStorage lq_token"]
     end
 
-    subgraph local["Local machine"]
-        FE["frontend :3000"]
-        BE["backend :8001 FastAPI"]
-        MONGO[("MongoDB (Docker) · 14 collections")]
+    subgraph machine["Developer machine"]
+        FE["frontend :3000<br/>corepack yarn start<br/>craco dev server"]
+        BE["backend :8001<br/>uvicorn server:app<br/>FastAPI app in app/main.py"]
+        subgraph compose["docker compose"]
+            MONGO[("MongoDB 7<br/>container localiq-mongo<br/>volume mongo-data<br/>14 collections")]
+        end
+        SEED["backend/seed/corpus.json.gz<br/>34 dossiers + city_stats"]
     end
 
-    subgraph ext["External"]
-        OW["OpenWeather AQI"]
-        OSM["OSM Overpass"]
-        NEWS["Google News RSS + publishers"]
+    subgraph ext["External services"]
+        OW["OpenWeather<br/>air pollution + forecast"]
+        OSM["Overpass API mirrors<br/>OVERPASS_URL"]
+        NEWS["Google News RSS<br/>+ publisher pages"]
         WIKI["Wikipedia REST"]
-        RED["Reddit JSON"]
-        LLM["LLM provider<br/>Groq gpt-oss · or OpenAI-compatible"]
-        RZP["Razorpay (test)"]
+        RED["Reddit search JSON"]
+        GROQ["Groq API<br/>gpt-oss-20b, gpt-oss-120b<br/>hosted browser_search tool"]
+        COMPAT["OpenAI-compatible API<br/>OpenAI, Gemini, OpenRouter,<br/>or Ollama on localhost"]
+        RZP["Razorpay, test mode"]
     end
 
-    SPA -->|static bundle| FE
-    SPA -->|REACT_APP_BACKEND_URL| BE
-    BE <--> MONGO
-    BE --> OW & OSM & NEWS & WIKI & RED & LLM & RZP
+    SPA -->|"loads the JS bundle"| FE
+    SPA -->|"REST + SSE to REACT_APP_BACKEND_URL/api"| BE
+    SPA -->|"checkout.js"| RZP
+    BE <-->|"Motor, MONGO_URL"| MONGO
+    SEED -.->|"scripts/seed.py import"| MONGO
+    BE --> OW
+    BE --> OSM
+    BE --> NEWS
+    BE --> WIKI
+    BE --> RED
+    BE -->|"LLM_PROVIDER=groq"| GROQ
+    BE -->|"LLM_PROVIDER=openai, or Groq fallback"| COMPAT
+    BE -->|"orders, signature check"| RZP

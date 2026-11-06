@@ -10,7 +10,7 @@ averaged away; and the cost of each report is metered to the token.
 | | |
 |---|---|
 | Backend | FastAPI · MongoDB (Motor) · LangGraph |
-| Frontend | React 19 · Tailwind · shadcn/ui |
+| Frontend | React 19 · Tailwind · Recharts |
 | Agents | intake → 4 parallel collectors → verifier → scorer → synthesiser → presenter |
 | Data | OpenStreetMap Overpass · OpenWeather AQI · Google News RSS + publisher pages · Wikipedia · Reddit |
 | LLMs | Groq (`gpt-oss-20b` / `gpt-oss-120b`) or any OpenAI-compatible API, switched by env |
@@ -18,6 +18,30 @@ averaged away; and the cost of each report is metered to the token.
 
 Architecture, data model, API reference, cost model and test strategy live in
 [`project/docs/`](project/README.md).
+
+## Code map
+
+```
+backend/
+├── server.py                  ASGI entry (uvicorn server:app)
+├── app/
+│   ├── main.py, bootstrap.py  FastAPI app; startup: indexes, demo users, city stats
+│   ├── config.py, db.py       settings from .env; Motor client and indexes
+│   ├── agents/                LangGraph report graph, collectors, verifier, scorer, presenter, advisor
+│   ├── services/llm/          provider routing (Groq / OpenAI-compatible), retries, cost ledger
+│   ├── services/              research retrieval, geo (OSM), air, dossier cache, city stats
+│   ├── routers/               auth, reports, share, community, contribute, billing, evals
+│   ├── rubric.py              modules, personas, weights, scoring and freshness policy
+│   └── evals/                 golden dataset and runner
+├── scripts/                   warm.py · seed.py · run_evals.py
+├── seed/corpus.json.gz        the shared 34-locality corpus
+└── tests/                     HTTP API suite
+frontend/src/
+├── pages/                     one file per route; landing/ holds the landing page, its CSS and data
+├── components/                layout/ · report/ · community/ · ui/
+├── context/AuthContext.jsx    session
+└── lib/api.js                 axios client, formatting helpers
+```
 
 ## Run it locally
 
@@ -32,7 +56,7 @@ cd backend
 python3.11 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env              # then add an LLM key (see below)
-python seed.py import             # load the 34-locality corpus into MongoDB
+python scripts/seed.py import     # load the 34-locality corpus into MongoDB
 uvicorn server:app --port 8001
 
 # 3. Frontend (new terminal)
@@ -77,13 +101,15 @@ request; on that tier the oversized calls fall through to the OpenAI-compatible 
 
 ## Data
 
-The locality corpus — OSM geometry, air quality and web-research layers per locality — is cached
-in MongoDB and shared by every user, so a warm report costs one synthesiser call.
+The locality corpus (OSM geometry, air quality and web-research layers per locality) is cached in
+MongoDB and shared by every user, so a warm report costs one synthesiser call. The committed seed
+file holds the OSM layer for all 34 localities, collected on 2026-11-06 and fresh for 30 days; air and
+web layers are collected once keys are set.
 
 ```bash
-python warm.py geo                # free layers (OSM + AQI) for all 34 localities
-python warm.py web 6              # web-research layers for the 6 least-fresh localities
-python seed.py export             # snapshot the corpus to backend/seed/corpus.json.gz
+python scripts/warm.py geo        # free layers (OSM + AQI) for all 34 localities
+python scripts/warm.py web 6      # web-research layers for the first 6 localities
+python scripts/seed.py export     # snapshot the corpus to backend/seed/corpus.json.gz
 ```
 
 Layers expire on a per-domain freshness policy (AQI 6 h, news 7 days, OSM 30 days); a report on a
@@ -93,7 +119,7 @@ stale layer re-collects it.
 
 ```bash
 cd backend
-python run_evals.py                                            # golden evals, no network
+python scripts/run_evals.py                                    # golden evals, no network
 REACT_APP_BACKEND_URL=http://localhost:8001 python -m pytest tests -q   # API suite, needs the backend running
 ```
 

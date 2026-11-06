@@ -1,29 +1,130 @@
 erDiagram
+    USERS ||--o{ JOBS : starts
     USERS ||--o{ REPORTS : owns
-    USERS ||--o{ JOBS : triggers
-    USERS ||--o{ POSTS : writes
+    JOBS |o--o| REPORTS : "report_id"
+    REPORTS |o--o{ REPORTS : "lens_of"
+    REPORTS ||--o{ CHAT_MESSAGES : "report_id"
+    USERS ||--o{ POSTS : "writes when signed in"
+    CONTRIB_LINKS ||--o{ POSTS : "link_token, anonymous"
+    USERS ||--o{ CONTRIB_LINKS : mints
+    POSTS |o--o| PROOFS : "proof_url"
+    POSTS ||--o{ VOTES : receives
     USERS ||--o{ VOTES : casts
     USERS ||--o{ ORDERS : pays
-    USERS ||--o{ CONTRIB_LINKS : mints
     USERS ||--o{ RECOMMENDATIONS : requests
-    JOBS ||--|| REPORTS : produces
-    REPORTS ||--o{ CHAT_MESSAGES : grounds
-    DOSSIERS ||--o{ REPORTS : "cached input for"
-    CONTRIB_LINKS ||--o{ POSTS : "collects (anonymous)"
-    POSTS ||--o| PROOFS : "backed by"
-    POSTS ||--o{ VOTES : receives
-    LOCALITIES ||--o{ DOSSIERS : "1 per locality"
-    LOCALITIES ||--o{ POSTS : "scoped to"
+    DOSSIERS ||--o{ REPORTS : "read by run_report"
+    DOSSIERS }o--|| CITY_STATS : "percentiles from"
 
-    USERS { string email PK string password_hash string plan string persona_key object profile int reports_used int credits string role }
-    REPORTS { objectid id PK string user_id string locality_slug string persona_key float composite float baseline_composite array cards array sources object narrative object cost object verifier_stats string share_token }
-    JOBS { string job_id PK string status array trace object cost string report_id }
-    DOSSIERS { string locality_slug PK object domains string updated_at }
-    POSTS { objectid id PK string locality_slug string kind string claim_type string status bool anonymous string link_token string proof_url int upvotes int downvotes }
-    CONTRIB_LINKS { string token PK string locality_slug string created_by array gaps }
-    PROOFS { string proof_id PK string data string mime }
-    ORDERS { string razorpay_order_id PK int amount string plan string status }
-    CHAT_MESSAGES { string report_id string role string content string day }
-    VOTES { string post_id string user_id int value }
-    RECOMMENDATIONS { string user_id array candidates object narrative }
-    CITY_STATS { string key PK object stats array localities }
+    USERS {
+        objectid _id PK
+        string email UK
+        string password_hash
+        string name
+        string role "user or admin"
+        string plan "free, pro_monthly, pro_annual"
+        int reports_used
+        int credits
+        int recommend_runs
+        string persona_key
+        object profile
+    }
+    JOBS {
+        string job_id UK
+        string user_id FK
+        string locality_slug
+        string persona_key
+        string status "running, done, failed"
+        array trace
+        object cost
+        string report_id
+    }
+    REPORTS {
+        objectid _id PK
+        string user_id FK
+        string locality_slug
+        string persona_key
+        string job_id "null for a lens report"
+        string lens_of "source report id"
+        object composite "score, confidence, coverage"
+        object baseline_composite
+        object module_scores
+        array cards "render blocks + citations"
+        object narrative
+        array sources
+        object layers "ok + collected_at per layer"
+        object verifier_stats
+        array disputes
+        array dropped
+        object cost
+        string share_token
+    }
+    DOSSIERS {
+        string locality_slug UK
+        object domains "air, geo, safety, civic, infra, chatter"
+        string updated_at
+    }
+    CITY_STATS {
+        string key UK "bengaluru"
+        int localities
+        object stats "median, p25, p75, n per module"
+        string computed_at
+    }
+    POSTS {
+        objectid _id PK
+        string locality_slug
+        string kind "fact_claim or experience"
+        string claim_type
+        string claim_value
+        string status "pending, corroborated, verified, unverified"
+        bool anonymous
+        string user_id "null when anonymous"
+        string link_token
+        string proof_url
+        int upvotes
+        int downvotes
+        string day
+    }
+    CONTRIB_LINKS {
+        string token UK
+        string locality_slug
+        string created_by FK
+        array gaps
+    }
+    PROOFS {
+        string proof_id UK
+        string data "base64 image"
+        string mime
+        bool anonymous
+    }
+    VOTES {
+        string post_id FK
+        string user_id FK
+        int value "+1 or -1"
+    }
+    CHAT_MESSAGES {
+        string report_id FK
+        string user_id FK
+        string role "user or assistant"
+        string content
+        array used_sources
+        string day
+    }
+    ORDERS {
+        string razorpay_order_id
+        string user_id FK
+        string plan
+        int amount "paise"
+        string status "created, paid, signature_failed"
+    }
+    RECOMMENDATIONS {
+        string user_id FK
+        object persona
+        array candidates
+        object narrative
+        int evaluated
+    }
+    LOGIN_ATTEMPTS {
+        string identifier "ip:email"
+        int count
+        string last_at
+    }

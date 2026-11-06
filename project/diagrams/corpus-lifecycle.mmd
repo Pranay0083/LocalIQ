@@ -1,0 +1,30 @@
+flowchart TB
+    subgraph WRITERS["Layer writers, shared by every user"]
+        COL["collectors inside a report run<br/>collect_air, collect_geo, collect_web"]
+        WARM["scripts/warm.py<br/>geo: air + geo for all 34 localities<br/>web N: research layers for the first N"]
+        QD["recommend: _quick_dossier()<br/>air + geo only"]
+    end
+
+    COL -->|"save_domain()"| DOS
+    WARM -->|"save_domain()"| DOS
+    QD -->|"save_domain()"| DOS
+
+    DOS[("dossiers<br/>one document per locality<br/>domains.layer.collected_at")]
+    POL["FRESHNESS_POLICY in rubric.py<br/>air 6 h, geo 30 d, safety 7 d,<br/>civic 14 d, infra 60 d, chatter 7 d"]
+    POL -.->|"is_fresh() in services/cache.py"| DOS
+
+    SEEDF["backend/seed/corpus.json.gz<br/>dossiers + city_stats only"]
+    DOS -->|"scripts/seed.py export"| SEEDF
+    SEEDF -->|"scripts/seed.py import, upsert"| DOS
+
+    DOS -->|"compute_city_stats() at startup<br/>and via scripts/warm.py stats"| CS[("city_stats<br/>median, p25, p75 per module")]
+
+    DOS -->|"get_dossier() at intake<br/>fresh layers reused"| RUN["run_report() for one user<br/>verify, score, synthesize, present"]
+    CS -->|"get_city_stats(), cached 6 h in process"| RUN
+    POSTS[("posts")] -->|"collect_community(), live on every run"| RUN
+    RUN --> REP[("reports<br/>one document per run")]
+
+    REP -->|"POST /api/reports/{id}/lens"| LENS["run_report() again for another persona<br/>no credit spent, fresh layers reused<br/>synthesizer called again, stale layers refreshed"]
+    LENS --> REP
+
+    SNAP["frontend lens-snapshot.json<br/>3 localities, 6 personas, city medians"] --> LAND["Landing page<br/>composite() re-implemented in the browser<br/>no request, no LLM call"]

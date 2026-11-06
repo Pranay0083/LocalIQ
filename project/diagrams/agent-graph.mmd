@@ -1,20 +1,28 @@
-flowchart LR
-    START((start)) --> INTAKE
+flowchart TB
+    S(("START")) --> INTAKE["intake<br/>persona weights + overrides, select_modules()<br/>get_dossier(): every cached layer is seeded into state<br/>stale_domains(): layers older than their FRESHNESS_POLICY TTL,<br/>or every layer when force=True"]
 
-    INTAKE["intake<br/>resolve locality + persona<br/>select modules<br/>fresh vs stale layers"]
+    INTAKE --> AIR
+    INTAKE --> GEO
+    INTAKE --> WEB
+    INTAKE --> COM
 
-    INTAKE --> AIR["collect_air<br/>OpenWeather → CPCB AQI"]
-    INTAKE --> GEO["collect_geo<br/>Overpass amenities + distances"]
-    INTAKE --> WEB["collect_web<br/>safety · civic · infra · chatter"]
-    INTAKE --> COM["collect_community<br/>resident claims"]
+    AIR["collect_air<br/>runs only if air is stale<br/>OpenWeather, converted to CPCB AQI"]
+    GEO["collect_geo<br/>runs only if geo is stale<br/>one Overpass query, mirrors in order"]
+    WEB["collect_web<br/>stale web layers in order safety, civic, infra, chatter<br/>only the first SEARCH_BUDGET_PER_DOSSIER of them<br/>one after another: web_research() + LLM extraction"]
+    COM["collect_community<br/>every run, read live from posts<br/>never written to the dossier"]
+
+    DOS[("dossiers<br/>save_domain() per refreshed layer")]
+    AIR -.-> DOS
+    GEO -.-> DOS
+    WEB -.-> DOS
 
     AIR --> VER
     GEO --> VER
     WEB --> VER
     COM --> VER
 
-    VER["verifier<br/>traceability gate<br/>contradictions · confidence"]
-    VER --> SCO["scorer<br/>20 modules → persona composite<br/>+ neutral baseline"]
-    SCO --> SYN["synthesizer<br/>only LLM writer<br/>strict JSON, verified facts only"]
-    SYN --> PRE["presenter<br/>typed render blocks<br/>citations + gap CTAs"]
-    PRE --> END((end))
+    VER["verifier, no LLM<br/>drops media, official and forum facts with no URL<br/>lowers confidence when the URL host was not retrieved<br/>keeps community_unverified facts but never scores them"]
+    VER --> SCO["scorer, no LLM<br/>score_all(): 20 module scores from rubric arithmetic<br/>composite(): persona score + neutral baseline"]
+    SCO --> SYN["synthesizer<br/>the only node that writes prose<br/>one chat_json() call, smart tier<br/>prompt holds scores and their drivers only<br/>fixed template if no JSON comes back"]
+    SYN --> PRE["presenter<br/>cards with typed render blocks and citations<br/>city median and quartile from city_stats<br/>contribution prompts on empty or thin modules"]
+    PRE --> E(("END"))

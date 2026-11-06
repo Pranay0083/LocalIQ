@@ -1,0 +1,28 @@
+flowchart TB
+    SY["synthesizer, compare, recommend<br/>chat_json(), smart tier"] --> CHAT
+    CH["chat answer, moderation, research JSON repair<br/>chat_json(), fast tier"] --> CHAT
+    CHAT{"llm.chat()<br/>LLM_PROVIDER"}
+    CHAT -->|"openai"| CC["compat_provider.chat()<br/>OpenAI SDK, max_retries=4"]
+    CHAT -->|"groq"| GC["groq_provider.chat()<br/>reasoning_effort=low<br/>up to 3 attempts"]
+    GC -->|"429 or 503: sleep 1.5 s x 2^attempt<br/>empty reply: double max_tokens<br/>network error: sleep 1.5 s"| GC
+    GC -->|"413 or any other HTTP error: no retry<br/>or all 3 attempts failed"| FB["compat_provider.chat()<br/>model_for(): the Groq fast or smart id<br/>becomes OPENAI_MODEL_FAST or OPENAI_MODEL_SMART"]
+    FB -->|"not configured, or the call failed"| NONE["None: the caller uses its<br/>template or apology text"]
+    CC -->|"call failed"| NONE
+
+    ST["streaming chat<br/>stream_chat(), fast tier"] --> SP{"LLM_PROVIDER"}
+    SP -->|"groq"| GS["groq_provider.stream()<br/>usage read from the last chunk"]
+    SP -->|"openai"| CS["compat_provider.stream()<br/>stream_options include_usage"]
+
+    WR["collect_web<br/>web_research()"] --> RP{"RESEARCH_PROVIDER"}
+    RP -->|"local, or auto with no GROQ_API_KEY"| LOC["research.local_research()<br/>1 call plans the queries<br/>httpx fetches news, publisher pages, Wikipedia, Reddit<br/>1 call extracts facts from that corpus only"]
+    RP -->|"groq, or auto with a key"| GWS["groq_provider.web_search()<br/>hosted browser_search tool<br/>2 attempts, a 429 returns rate_limited at once"]
+    GWS -->|"failed, and RESEARCH_PROVIDER=auto"| LOC
+    LOC -->|"both calls go through llm.chat()<br/>with RESEARCH_MODEL"| CHAT
+
+    REC["ledger.record()<br/>prices tokens and searches<br/>free=True for a localhost base URL"]
+    CC -.-> REC
+    GC -.-> REC
+    FB -.-> REC
+    GS -.-> REC
+    CS -.-> REC
+    GWS -.-> REC

@@ -1,11 +1,17 @@
 flowchart TB
-    F["Facts from all four collectors"] --> C1{"source_url present<br/>AND in the retrieved set?"}
-    C1 -->|no| D["dropped<br/>not traceable · never scored"]
-    C1 -->|yes| C2{"contradicts another fact<br/>for the same field?"}
-    C2 -->|yes| DIS["disputed<br/>both sides shown · confidence lowered"]
-    C2 -->|no| C3{"community claim?"}
-    C3 -->|anonymous| U["unverified<br/>rendered for context · weight 0"]
-    C3 -->|"1 account + proof"| P["pending<br/>weight 0"]
-    C3 -->|"2+ accounts + proof"| VF["verified<br/>enters the score"]
-    C3 -->|no| K["kept"]
-    K & VF --> SC["scorer"]
+    F["Facts from every layer in state<br/>cached and refreshed"] --> T{"source_type is<br/>media, official or forum?"}
+    T -->|"no"| C{"source_type is<br/>community_unverified?"}
+    C -->|"yes"| NS["kept with scored=False<br/>cited on the card, never scored"]
+    C -->|"no: live_api, computed,<br/>community_verified"| K["kept"]
+    T -->|"yes"| U{"source_url present<br/>and http or https?"}
+    U -->|"no"| D["dropped<br/>not traceable to a retrieved page<br/>listed in report.dropped"]
+    U -->|"yes"| H{"URL host among the hosts<br/>of pages retrieved for these layers?"}
+    H -->|"no"| LOW["confidence set to low<br/>note: not among the pages it opened"]
+    H -->|"yes, or no URLs recorded"| G{"official, but not on a<br/>government-like domain?"}
+    LOW --> G
+    G -->|"yes"| RE["reclassified as media"]
+    G -->|"no"| K
+    RE --> K
+    K --> SC["scored_facts, to the scorer"]
+    K --> DS{"water or power: a community claim<br/>complains while the utility source reassures?"}
+    DS -->|"yes"| DIS["dispute added to report.disputes<br/>both claims shown, no score change"]

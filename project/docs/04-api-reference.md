@@ -1,97 +1,130 @@
 # 04 · API Reference
 
-Base URL: `REACT_APP_BACKEND_URL` + `/api`. Auth is a JWT bearer token from `/api/auth/login`,
-stored client-side in `localStorage.lq_token`.
+43 endpoints, all under `/api`. Base URL: `REACT_APP_BACKEND_URL` (locally
+`http://localhost:8001`). FastAPI also serves the generated schema at `/openapi.json` and Swagger
+UI at `/docs`.
+
+**Auth column.** `—` no auth. `user` needs a valid JWT (Bearer header or `access_token` cookie).
+`owner` additionally requires that the caller owns the resource; a report or job that belongs to
+someone else returns `404`, not `403`, so ids cannot be probed.
+
+| Router | File | Endpoints |
+|---|---|---|
+| App | `app/main.py` | 2 |
+| Auth | `routers/auth.py` | 5 |
+| Catalog, reports, advisors, account | `routers/reports.py` | 16 |
+| Share | `routers/share.py` | 2 |
+| Community | `routers/community.py` | 7 |
+| Contribute | `routers/contribute.py` | 5 |
+| Billing | `routers/billing.py` | 4 |
+| Evals | `routers/evals.py` | 2 |
+| **Total** | | **43** |
+
+## App
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/api/` | — | service name and status |
+| GET | `/api/health` | — | pings MongoDB |
 
 ## Auth
 
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| POST | `/api/auth/register` | — | bcrypt hash, returns access token |
-| POST | `/api/auth/login` | — | brute-force protected via `login_attempts` |
-| POST | `/api/auth/logout` | user | |
-| GET | `/api/auth/me` | user | current user + entitlements |
-| PUT | `/api/auth/profile` | user | persona + profile answers used by the synthesiser |
+| POST | `/api/auth/register` | — | `{email, password (6-128), name}`; `409` if the email exists; returns the user and `access_token`, sets cookies |
+| POST | `/api/auth/login` | — | `401` on bad credentials; `429` after 5 failures for the same `ip:email`, for 15 minutes |
+| POST | `/api/auth/logout` | — | clears the auth cookies |
+| GET | `/api/auth/me` | user | current user |
+| PUT | `/api/auth/profile` | user | profile answers (`stage`, `household`, `work_locality`, `work_mode`, `budget_band`, `commute_tolerance`, `free_text`) and `persona_key` |
 
 ## Catalog
 
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| GET | `/api/localities` | user | 34 Bengaluru localities |
-| GET | `/api/personas` | user | 6 personas + weights |
-| GET | `/api/modules` | user | 20 modules, tier and label |
-| GET | `/api/trust/rubric` | user | full rubric + freshness policy (powers /app/trust) |
-| GET | `/api/health` | — | liveness |
+| GET | `/api/localities` | — | `?q=&limit=40`; each locality has `warm: true` when a dossier exists |
+| GET | `/api/personas` | — | 6 personas with weights and the modules each selects |
+| GET | `/api/modules` | — | 20 modules: key, label, icon, tier |
+| GET | `/api/trust/rubric` | — | formula text per module, personas, baseline weights, freshness policy, source types, principles |
 
 ## Reports
 
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| POST | `/api/reports/generate` | user | entitlement-checked; returns `{job_id}`, runs the graph in the background |
-| GET | `/api/reports/job/{job_id}` | user | live agent trace, polled by the Generating screen |
-| GET | `/api/reports` | user | list own reports |
-| GET | `/api/reports/{id}` | owner | cards, narrative, sources, cost, verifier stats |
-| POST | `/api/reports/{id}/lens` | owner | re-score for another persona — **free, no LLM call** |
-| POST | `/api/reports/{id}/chat` | owner | grounded Q&A (non-streaming) |
-| POST | `/api/reports/{id}/chat/stream` | owner | **SSE** token stream + `###SOURCES` citation block |
-| GET | `/api/reports/{id}/chat` | owner | chat history |
-| POST | `/api/reports/{id}/share` | owner | mint (once) a public token → `/r/{token}` |
-| GET | `/api/public/reports/{token}` | — | public teaser: 3 hero cards, both scores, rest locked |
+| POST | `/api/reports/generate` | user | `{locality, persona_key?, overrides?, force}`. `locality` may be a slug, name or pincode. Returns `{job_id, report_id, cached}`. An existing report for the same user, locality and persona is returned with `cached: true` and no charge unless `force`. `404` outside Bengaluru, `400` unknown persona, `402` when no free report or credit is left |
+| GET | `/api/reports/job/{job_id}` | owner | job status and `trace[]`, polled by the Generating screen |
+| GET | `/api/reports` | user | own reports, newest per (locality, persona), up to 40, without cards |
+| GET | `/api/reports/{id}` | owner | the full report document |
+| POST | `/api/reports/{id}/lens` | owner | `{persona_key, overrides?}`. Re-runs the graph on the cached dossier and stores a new report. No credit; one synthesizer call; stale layers are refreshed |
+| POST | `/api/reports/{id}/chat` | owner | `{message}` (1-1000 chars); JSON answer with `used_sources` and `missing` |
+| POST | `/api/reports/{id}/chat/stream` | owner | same input; `text/event-stream` with `delta`, `done` and `error` frames |
+| GET | `/api/reports/{id}/chat` | user | the caller's last 80 turns on that report, oldest first |
 
-Chat is capped at **100 messages/day per user**; exceeding it returns `429`.
+Both chat endpoints count the user's turns across all reports and return `429` at 100 per UTC day.
 
-## Premium
+## Advisors and account
 
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| POST | `/api/compare` | **Pro** | side-by-side, module-by-module delta; `402` for free users |
-| POST | `/api/recommend` | user | ranked shortlist; one free run, then Pro |
-| GET | `/api/entitlement` | user | reports used / remaining, plan, feature flags |
-| GET | `/api/traces` | user | own agent runs with per-run cost + the global ledger |
+| POST | `/api/compare` | user, Pro | `{slugs: 2-3, persona_key?}`; `402` for free plans. Runs `run_report()` per locality, then one comparison call. Not stored |
+| POST | `/api/recommend` | user | ranked shortlist of 5 from 10 candidates; free plans get one run, then `402`. Stored in `recommendations` |
+| GET | `/api/entitlement` | user | plan, reports used, free left, credits, `can_generate`, `can_compare`, `can_recommend` |
+| GET | `/api/traces` | user | own last 20 jobs with cost, plus the process-wide token ledger |
+
+## Share
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| POST | `/api/reports/{id}/share` | owner | mints a token once and returns `{token, path: /r/{token}}` |
+| GET | `/api/public/reports/{token}` | — | teaser: both scores, part of the narrative, the first 3 cards that have data, the rest listed as locked |
 
 ## Community
 
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| GET | `/api/community/posts` | user | filterable by locality; excludes `removed` |
-| POST | `/api/community/posts` | user | PII scrub + toxicity screen; fact claims need proof |
-| POST | `/api/community/posts/{id}/vote` | user | ±1, one per user; 5 net upvotes grants a credit |
-| POST | `/api/community/proof` | user | base64 image, ≤3 MB |
+| GET | `/api/community/posts` | — | `?locality_slug=&kind=&limit=50`; excludes `removed` |
+| POST | `/api/community/posts` | user | PII scrub, LLM moderation (`422` if held), fact claims need a valid `claim_type` and `proof_id`; 10 posts per user per day (`429`) |
+| POST | `/api/community/posts/{id}/vote` | user | `{value: 1 or -1}`; `409` for a repeated vote; a post that reaches net +5 earns its author a credit |
+| POST | `/api/community/proof` | user | `{data_url}` image, `413` above 3 MB |
 | GET | `/api/community/proof/{proof_id}` | — | serves the stored image |
-| GET | `/api/community/leaderboard` | user | top contributors |
-| GET | `/api/community/me` | user | own contributions + credits |
+| GET | `/api/community/leaderboard` | — | top contributors by corroborated or verified posts, then upvotes |
+| GET | `/api/community/me` | user | own posts, totals, credits earned, posting streak |
 
 ## Contribution links
 
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| POST | `/api/contribute/links` | user | idempotent per (user, locality); embeds the report's current gaps |
-| GET | `/api/contribute/links` | user | own links + contribution counts |
-| GET | `/api/public/contribute/{token}` | — | locality, inviter, gaps, claim types, recent posts |
-| POST | `/api/public/contribute/{token}/proof` | — | anonymous image proof, ≤3 MB |
-| POST | `/api/public/contribute/{token}` | — | publishes as `unverified`; **25/day per link, 8/day per IP** |
+| POST | `/api/contribute/links` | user | `{locality_slug, report_id?}`; one link per user and locality; copies up to 6 gaps from the report's empty cards |
+| GET | `/api/contribute/links` | user | own links with contribution counts |
+| GET | `/api/public/contribute/{token}` | — | locality, inviter name, gaps, claim types, 5 recent posts |
+| POST | `/api/public/contribute/{token}/proof` | — | anonymous image proof, `413` above 3 MB |
+| POST | `/api/public/contribute/{token}` | — | publishes with `anonymous: true`, `status: unverified`. `429` after 25 posts per link per day, or 8 per IP per day when an `X-Forwarded-For` header is present (without a proxy that sets it, only the per-link cap applies) |
 
-## Billing (Razorpay, test mode)
+## Billing (Razorpay test mode)
 
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| GET | `/api/billing/plans` | user | Pro Monthly ₹499 · Pro Annual ₹4,499 |
-| POST | `/api/billing/order` | user | creates a Razorpay order |
-| POST | `/api/billing/verify` | user | signature verification, upgrades the plan |
-| POST | `/api/billing/webhook` | — | HMAC-verified webhook |
+| GET | `/api/billing/plans` | user | Free, Pro Monthly ₹499, Pro Annual ₹4,499, the current plan and the Razorpay key id |
+| POST | `/api/billing/order` | user | creates a Razorpay order; `502` if the gateway call fails |
+| POST | `/api/billing/verify` | user | HMAC-SHA256 signature check, then sets the plan; `400` on a bad signature |
+| POST | `/api/billing/webhook` | — | verifies `X-Razorpay-Signature`; `payment.captured` sets the plan |
 
 ## Evals
 
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| GET | `/api/evals/golden` | user | runs all 6 suites live, returns per-check results |
-| GET | `/api/evals/dataset` | user | the golden dataset itself: fixtures, frozen values, invariants |
+| GET | `/api/evals/golden` | user | runs all 6 suites (66 checks) and returns per-check results |
+| GET | `/api/evals/dataset` | user | dataset version, fixtures, frozen expectations, invariants, persona modules, block contract |
 
-## Status codes used deliberately
+## Status codes used on purpose
 
 | Code | Meaning in LocalIQ |
 |---|---|
-| `402` | premium feature, free plan — the paywall |
-| `403` | authenticated but not the owner of the resource |
-| `422` | held by automated moderation (with the reason) |
-| `429` | quota: chat 100/day, contribution link 25/day, per-IP 8/day |
+| `400` | bad id, unknown persona or plan, missing proof, bad payment signature |
+| `401` | missing, expired or invalid token |
+| `402` | paywall: no free report or credit left, compare on a free plan, second free recommendation |
+| `404` | not found, or not yours; a locality outside Bengaluru |
+| `409` | email already registered, repeated vote |
+| `413` | proof image above 3 MB |
+| `422` | post held by automated moderation (with the reason), or request validation |
+| `429` | login lockout, chat 100/day, posts 10/day, link 25/day, IP 8/day |
+| `502` | Razorpay order creation failed |
