@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { GitDiff, LockKey, Sparkle, X } from "@phosphor-icons/react";
 import { useTheme } from "next-themes";
-import { ModuleIcon } from "@/components/ModuleIcon";
+import { ModuleIcon } from "@/components/report/ModuleIcon";
 import { api, errMessage, scoreTone, toneClass } from "@/lib/api";
 
 const PALETTE = {
@@ -77,10 +77,10 @@ export default function Compare() {
   if (locked) {
     return (
       <div className="mx-auto max-w-2xl py-14 text-center" data-testid="compare-locked">
-        <div className="mx-auto grid h-14 w-14 place-items-center border border-indigo-500/40 bg-indigo-500/10">
-          <LockKey size={24} weight="duotone" className="text-indigo-400" />
+        <div className="mx-auto grid h-14 w-14 place-items-center border border-zinc-50/40 bg-zinc-50/10">
+          <LockKey size={24} weight="duotone" className="text-zinc-50" />
         </div>
-        <h1 className="mt-5 font-[Outfit] text-3xl font-light tracking-tight text-zinc-100">
+        <h1 className="mt-5 text-2xl font-semibold  text-zinc-100">
           Side-by-side comparison is Pro
         </h1>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-zinc-500">
@@ -99,7 +99,7 @@ export default function Compare() {
         <button
           data-testid="compare-upgrade"
           onClick={() => navigate("/app/account")}
-          className="mono mt-6 border border-indigo-500 bg-indigo-600 px-5 py-3 text-[11px] uppercase tracking-wider text-white transition-colors hover:bg-indigo-500"
+          className="mono mt-6 border border-primary bg-primary px-5 py-3 text-xs text-primary-foreground transition-colors hover:bg-primary/90"
         >
           See Pro plans
         </button>
@@ -110,8 +110,7 @@ export default function Compare() {
   return (
     <div className="space-y-6 pb-16">
       <div>
-        <p className="overline text-indigo-400">Premium · comparator agent</p>
-        <h1 className="mt-2 font-[Outfit] text-3xl font-light tracking-tight text-zinc-100">
+        <h1 className="text-2xl font-semibold  text-zinc-100">
           Put your shortlist next to each other
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-zinc-500">
@@ -126,14 +125,14 @@ export default function Compare() {
           data-testid="compare-persona"
           value={persona}
           onChange={(e) => setPersona(e.target.value)}
-          className="mono border border-zinc-800 bg-zinc-950 px-2 py-1.5 text-[11px] text-indigo-300 outline-none focus:border-indigo-500"
+          className="mono border border-zinc-800 bg-zinc-950 px-2 py-1.5 text-xs text-zinc-50 outline-none focus:border-zinc-50"
         >
           <option value="">My saved persona</option>
           {personas.map((p) => <option key={p.key} value={p.key}>{p.label}</option>)}
         </select>
         <div className="ml-auto flex items-center gap-2">
           {selected.map((s, i) => (
-            <span key={s} className="mono inline-flex items-center gap-1 border px-2 py-1 text-[10px]"
+            <span key={s} className="mono inline-flex items-center gap-1 border px-2 py-1 text-xs"
                   style={{ borderColor: COLORS[i], color: COLORS[i] }}>
               {localities.find((l) => l.slug === s)?.name || s}
               <button onClick={() => toggle(s)} data-testid={`compare-remove-${s}`}><X size={10} /></button>
@@ -143,7 +142,7 @@ export default function Compare() {
             data-testid="compare-run"
             disabled={busy || selected.length < 2}
             onClick={run}
-            className="mono inline-flex items-center gap-1.5 border border-indigo-500 bg-indigo-600 px-4 py-2 text-[11px] uppercase tracking-wider text-white transition-colors hover:bg-indigo-500 disabled:opacity-40"
+            className="mono inline-flex items-center gap-1.5 border border-primary bg-primary px-4 py-2 text-xs text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40"
           >
             <GitDiff size={13} /> {busy ? "Comparing…" : "Compare"}
           </button>
@@ -158,18 +157,18 @@ export default function Compare() {
               key={l.slug}
               data-testid={`compare-pick-${l.slug}`}
               onClick={() => toggle(l.slug)}
-              className={`px-3 py-2.5 text-left transition-colors ${idx >= 0 ? "bg-indigo-500/10" : "bg-surface hover:bg-surface2"}`}
+              className={`px-3 py-2.5 text-left transition-colors ${idx >= 0 ? "bg-zinc-50/10" : "bg-surface hover:bg-surface2"}`}
               style={idx >= 0 ? { boxShadow: `inset 3px 0 0 ${COLORS[idx]}` } : undefined}
             >
               <p className="truncate text-xs text-zinc-200">{l.name}</p>
-              <p className="mono text-[9px] text-zinc-600">{l.zone}</p>
+              <p className="mono text-xs text-zinc-600">{l.zone}</p>
             </button>
           );
         })}
       </div>
 
       {busy ? (
-        <p className="mono py-10 text-center text-xs uppercase tracking-[0.3em] text-zinc-600 caret">
+        <p className="mono py-10 text-center text-xs text-zinc-600 caret">
           re-scoring each locality under your weights
         </p>
       ) : null}
@@ -181,7 +180,7 @@ export default function Compare() {
               <div key={l.slug} className="px-4 py-4" style={{ boxShadow: `inset 0 3px 0 ${COLORS[i]}` }}
                    data-testid={`compare-col-${l.slug}`}>
                 <p className="text-sm font-medium text-zinc-100">{l.name}</p>
-                <p className="mono text-[10px] text-zinc-600">{l.zone} · {l.sources} sources</p>
+                <p className="mono text-xs text-zinc-600">{l.zone} · {l.sources} sources</p>
                 <div className="mt-2 flex items-end gap-3">
                   <div>
                     <p className={`mono text-4xl leading-none ${toneClass[scoreTone(l.score)]}`}>{l.score ?? "—"}</p>
@@ -192,7 +191,7 @@ export default function Compare() {
                     <p className="overline text-zinc-700">baseline</p>
                   </div>
                 </div>
-                <p className="mt-2 text-[11px] leading-snug text-zinc-500">{l.narrative}</p>
+                <p className="mt-2 text-xs leading-snug text-zinc-500">{l.narrative}</p>
               </div>
             ))}
           </div>
@@ -219,7 +218,7 @@ export default function Compare() {
             <table className="w-full min-w-[520px] text-left" data-testid="compare-table">
               <thead>
                 <tr className="border-b border-zinc-900">
-                  <th className="overline sticky left-0 z-10 border-r border-zinc-900 bg-surface shadow-[6px_0_10px_-8px_rgb(15_23_42/0.35)] px-3 py-2 text-zinc-600">Module</th>
+                  <th className="overline sticky left-0 z-10 border-r border-zinc-900 bg-surface px-3 py-2 text-zinc-600">Module</th>
                   {result.localities.map((l, i) => (
                     <th key={l.slug} className="overline px-3 py-2" style={{ color: COLORS[i] }}>{l.name}</th>
                   ))}
@@ -231,7 +230,7 @@ export default function Compare() {
                   const best = Math.max(...values.filter((v) => v !== null && v !== undefined));
                   return (
                     <tr key={m.key} className="border-b border-zinc-900/60" data-testid={`compare-row-${m.key}`}>
-                      <td className="sticky left-0 z-10 border-r border-zinc-900 bg-surface shadow-[6px_0_10px_-8px_rgb(15_23_42/0.35)] px-3 py-2">
+                      <td className="sticky left-0 z-10 border-r border-zinc-900 bg-surface px-3 py-2">
                         <span className="flex items-center gap-2 text-xs text-zinc-300">
                           <ModuleIcon module={m.key} size={14} className="text-zinc-600" /> {m.label}
                         </span>
@@ -253,13 +252,13 @@ export default function Compare() {
             </table>
           </div>
 
-          <div className="border border-indigo-900/60 bg-indigo-950/10 px-5 py-5" data-testid="compare-verdict">
-            <p className="overline flex items-center gap-1.5 text-indigo-400">
+          <div className="border border-zinc-300/60 bg-zinc-50/10 px-5 py-5" data-testid="compare-verdict">
+            <p className="overline flex items-center gap-1.5 text-zinc-50">
               <Sparkle size={12} weight="duotone" /> Comparator verdict
             </p>
             <p className="mt-2 text-sm leading-relaxed text-zinc-200">{result.verdict?.verdict}</p>
             {result.verdict?.tradeoff ? (
-              <p className="mt-3 border-l-2 border-indigo-500/60 pl-3 text-sm text-zinc-400">
+              <p className="mt-3 border-l-2 border-zinc-50/60 pl-3 text-sm text-zinc-400">
                 <span className="text-zinc-200">The real trade-off:</span> {result.verdict.tradeoff}
               </p>
             ) : null}
@@ -270,10 +269,10 @@ export default function Compare() {
                     {result.localities.find((l) => l.slug === p.slug)?.name || p.slug}
                   </p>
                   <p className="overline mt-1.5 text-emerald-400">wins</p>
-                  {(p.wins || []).map((w, k) => <p key={k} className="text-[11px] text-zinc-400">· {w}</p>)}
+                  {(p.wins || []).map((w, k) => <p key={k} className="text-xs text-zinc-400">· {w}</p>)}
                   <p className="overline mt-1.5 text-amber-400">loses</p>
-                  {(p.loses || []).map((w, k) => <p key={k} className="text-[11px] text-zinc-400">· {w}</p>)}
-                  {p.best_for ? <p className="mt-2 text-[10px] text-zinc-600">Best for: {p.best_for}</p> : null}
+                  {(p.loses || []).map((w, k) => <p key={k} className="text-xs text-zinc-400">· {w}</p>)}
+                  {p.best_for ? <p className="mt-2 text-xs text-zinc-600">Best for: {p.best_for}</p> : null}
                 </div>
               ))}
             </div>
@@ -283,7 +282,7 @@ export default function Compare() {
               </p>
             ) : null}
             {result.verdict?.cannot_tell ? (
-              <p className="mt-2 text-[11px] text-zinc-600">What this cannot tell you: {result.verdict.cannot_tell}</p>
+              <p className="mt-2 text-xs text-zinc-600">What this cannot tell you: {result.verdict.cannot_tell}</p>
             ) : null}
           </div>
         </div>

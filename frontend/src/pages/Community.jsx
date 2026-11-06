@@ -5,13 +5,13 @@ import {
   ArrowFatDown, ArrowFatUp, CheckCircle, Clock, Fire, Image as ImageIcon, PlusCircle,
   SealCheck, SealWarning, Trophy, WarningOctagon,
 } from "@phosphor-icons/react";
-import { ContributeDialog } from "@/components/ContributeDialog";
+import { ContributeDialog } from "@/components/community/ContributeDialog";
 import { api, errMessage, fmtDate } from "@/lib/api";
 
 const STATUS_META = {
   pending: { label: "Pending corroboration", icon: Clock, cls: "border-zinc-700 text-zinc-400" },
   unverified: { label: "Unverified · anonymous", icon: SealWarning, cls: "border-slate-500/50 text-slate-300" },
-  corroborated: { label: "Corroborated", icon: CheckCircle, cls: "border-teal-500/50 text-teal-300" },
+  corroborated: { label: "Corroborated", icon: CheckCircle, cls: "border-zinc-50/50 text-zinc-50" },
   verified: { label: "Verified", icon: SealCheck, cls: "border-emerald-500/50 text-emerald-300" },
   disputed: { label: "Disputed", icon: WarningOctagon, cls: "border-amber-500/50 text-amber-300" },
 };
@@ -64,8 +64,7 @@ export default function Community() {
       <div>
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="overline text-teal-400">Resident intelligence</p>
-            <h1 className="mt-2 font-[Outfit] text-3xl font-light tracking-tight text-zinc-100">
+            <h1 className="text-2xl font-semibold  text-zinc-100">
               What people who live there actually know
             </h1>
             <p className="mt-2 max-w-xl text-sm text-zinc-500">
@@ -76,7 +75,7 @@ export default function Community() {
           <button
             data-testid="community-new-post"
             onClick={() => setDialog(true)}
-            className="mono inline-flex items-center gap-1.5 border border-teal-500 bg-teal-600 px-4 py-2.5 text-[11px] uppercase tracking-wider text-white transition-colors hover:bg-teal-500"
+            className="mono inline-flex items-center gap-1.5 border border-zinc-50 bg-zinc-50 px-4 py-2.5 text-xs text-white transition-colors hover:bg-zinc-50"
           >
             <PlusCircle size={13} /> Post
           </button>
@@ -87,7 +86,7 @@ export default function Community() {
             data-testid="community-locality-filter"
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
-            className="mono border border-zinc-800 bg-zinc-950 px-2 py-1.5 text-[11px] text-zinc-300 outline-none focus:border-teal-500"
+            className="mono border border-zinc-800 bg-zinc-950 px-2 py-1.5 text-xs text-zinc-300 outline-none focus:border-zinc-50"
           >
             <option value="">All localities</option>
             {localities.map((l) => <option key={l.slug} value={l.slug}>{l.name}</option>)}
@@ -97,9 +96,9 @@ export default function Community() {
               key={k || "all"}
               data-testid={`community-filter-${k || "all"}`}
               onClick={() => setKind(k)}
-              className={`mono border px-2.5 py-1.5 text-[10px] uppercase tracking-wider transition-colors ${
-                kind === k ? "border-teal-500/60 bg-teal-500/10 text-teal-300" : "border-zinc-800 text-zinc-500 hover:text-zinc-200"
-              }`}
+              className={`mono border px-2.5 py-1.5 text-xs transition-colors ${
+ kind === k ? "border-zinc-50/60 bg-zinc-50/10 text-zinc-50" : "border-zinc-800 text-zinc-500 hover:text-zinc-200"
+ }`}
             >
               {l}
             </button>
@@ -117,7 +116,7 @@ export default function Community() {
               <button
                 data-testid="community-empty-cta"
                 onClick={() => setDialog(true)}
-                className="mono mt-4 border border-teal-500/60 bg-teal-500/10 px-4 py-2 text-[11px] uppercase tracking-wider text-teal-300 hover:bg-teal-500/20"
+                className="mono mt-4 border border-zinc-50/60 bg-zinc-50/10 px-4 py-2 text-xs text-zinc-50 hover:bg-zinc-50/20"
               >
                 Be the first
               </button>
@@ -137,10 +136,10 @@ export default function Community() {
                       via shared link
                     </span>
                   ) : null}
-                  <span className="mono text-[10px] text-zinc-600">
+                  <span className="mono text-xs text-zinc-600">
                     {localities.find((l) => l.slug === p.locality_slug)?.name || p.locality_slug}
                   </span>
-                  <span className="mono text-[10px] text-zinc-700">{fmtDate(p.created_at)}</span>
+                  <span className="mono text-xs text-zinc-700">{fmtDate(p.created_at)}</span>
                   {p.kind === "fact_claim" || p.anonymous ? (
                     <span className={`overline inline-flex items-center gap-1 border px-1.5 py-[2px] ${meta.cls}`}>
                       <Icon size={9} weight="fill" /> {meta.label}
@@ -151,13 +150,13 @@ export default function Community() {
                     </span>
                   )}
                   {p.credit_granted ? (
-                    <span className="overline border border-teal-500/40 px-1.5 py-[2px] text-teal-300">credit earned</span>
+                    <span className="overline border border-zinc-50/40 px-1.5 py-[2px] text-zinc-50">credit earned</span>
                   ) : null}
                 </div>
 
                 {p.kind === "fact_claim" ? (
                   <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <span className="mono border border-zinc-800 px-1.5 py-[2px] text-[10px] text-zinc-400">
+                    <span className="mono border border-zinc-800 px-1.5 py-[2px] text-xs text-zinc-400">
                       {String(p.claim_type).replace(/_/g, " ")}
                     </span>
                     {p.claim_value ? (
@@ -171,7 +170,7 @@ export default function Community() {
                 {p.topics?.length ? (
                   <div className="mt-2 flex flex-wrap gap-1">
                     {p.topics.map((t) => (
-                      <span key={t} className="mono border border-zinc-900 px-1.5 py-[2px] text-[9px] text-zinc-600">
+                      <span key={t} className="mono border border-zinc-900 px-1.5 py-[2px] text-xs text-zinc-600">
                         #{t}
                       </span>
                     ))}
@@ -184,7 +183,7 @@ export default function Community() {
                     target="_blank"
                     rel="noreferrer"
                     data-testid={`post-proof-${p.id}`}
-                    className="mono mt-2 inline-flex items-center gap-1 text-[10px] text-teal-400 hover:underline"
+                    className="mono mt-2 inline-flex items-center gap-1 text-xs text-zinc-50 hover:underline"
                   >
                     <ImageIcon size={11} /> view proof
                   </a>
@@ -194,19 +193,19 @@ export default function Community() {
                   <button
                     data-testid={`upvote-${p.id}`}
                     onClick={() => vote(p.id, 1)}
-                    className="mono inline-flex items-center gap-1 border border-zinc-800 px-2 py-1 text-[10px] text-zinc-400 transition-colors hover:border-emerald-500/50 hover:text-emerald-300"
+                    className="mono inline-flex items-center gap-1 border border-zinc-800 px-2 py-1 text-xs text-zinc-400 transition-colors hover:border-emerald-500/50 hover:text-emerald-300"
                   >
                     <ArrowFatUp size={11} /> {p.upvotes || 0}
                   </button>
                   <button
                     data-testid={`downvote-${p.id}`}
                     onClick={() => vote(p.id, -1)}
-                    className="mono inline-flex items-center gap-1 border border-zinc-800 px-2 py-1 text-[10px] text-zinc-400 transition-colors hover:border-red-500/50 hover:text-red-300"
+                    className="mono inline-flex items-center gap-1 border border-zinc-800 px-2 py-1 text-xs text-zinc-400 transition-colors hover:border-red-500/50 hover:text-red-300"
                   >
                     <ArrowFatDown size={11} /> {p.downvotes || 0}
                   </button>
                   {p.pii_scrubbed ? (
-                    <span className="mono text-[9px] text-zinc-700">{p.pii_scrubbed} PII item(s) auto-removed</span>
+                    <span className="mono text-xs text-zinc-700">{p.pii_scrubbed} PII item(s) auto-removed</span>
                   ) : null}
                 </div>
               </article>
@@ -232,7 +231,7 @@ export default function Community() {
             ))}
           </div>
           {mine?.stats?.streak_days ? (
-            <p className="mono mt-2 inline-flex items-center gap-1 text-[10px] text-amber-300">
+            <p className="mono mt-2 inline-flex items-center gap-1 text-xs text-amber-300">
               <Fire size={11} weight="fill" /> {mine.stats.streak_days}-day streak
             </p>
           ) : null}
@@ -246,21 +245,21 @@ export default function Community() {
             {board.map((row, i) => (
               <div key={row.user_id} className="flex items-center justify-between gap-2">
                 <span className="flex min-w-0 items-center gap-2">
-                  <span className="mono w-4 text-[10px] text-zinc-700">{i + 1}</span>
+                  <span className="mono w-4 text-xs text-zinc-700">{i + 1}</span>
                   <span className="truncate text-xs text-zinc-300">{row.name}</span>
                 </span>
-                <span className="mono shrink-0 text-[10px] text-zinc-500">
+                <span className="mono shrink-0 text-xs text-zinc-500">
                   {row.verified}v · {row.upvotes}↑
                 </span>
               </div>
             ))}
-            {!board.length ? <p className="text-[11px] text-zinc-600">No contributors yet.</p> : null}
+            {!board.length ? <p className="text-xs text-zinc-600">No contributors yet.</p> : null}
           </div>
         </div>
 
         <div className="panel border border-zinc-900 bg-surface px-4 py-3">
           <p className="overline text-zinc-600">How verification works</p>
-          <ol className="mt-2 space-y-1.5 text-[11px] leading-snug text-zinc-500">
+          <ol className="mt-2 space-y-1.5 text-xs leading-snug text-zinc-500">
             <li><span className="text-zinc-300">1.</span> Post a fact claim with a photo or screenshot.</li>
             <li><span className="text-zinc-300">2.</span> Two independent residents with proof → corroborated.</li>
             <li><span className="text-zinc-300">3.</span> Three → verified, and the scorer can use it.</li>

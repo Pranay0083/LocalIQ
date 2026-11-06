@@ -10,7 +10,7 @@ export const ThemeToggle = ({ className = "" }) => {
       data-testid="theme-toggle"
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
       onClick={() => setTheme(dark ? "light" : "dark")}
-      className={`relative grid h-8 w-8 shrink-0 place-items-center rounded-full border border-zinc-800 bg-zinc-950 text-zinc-500 transition-colors hover:border-indigo-500 hover:text-indigo-400 ${className}`}
+      className={`relative grid h-8 w-8 shrink-0 place-items-center rounded-md border border-zinc-800 bg-surface text-zinc-500 transition-colors hover:border-zinc-600 hover:text-zinc-100 ${className}`}
     >
       <Sun
         size={14}

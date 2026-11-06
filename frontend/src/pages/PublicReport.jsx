@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowRight, ChartLineUp, LockKey, ShieldCheck, Warning } from "@phosphor-icons/react";
-import { ModuleCard } from "@/components/ModuleCard";
-import { ModuleIcon } from "@/components/ModuleIcon";
-import { ThemeToggle } from "@/context/ThemeToggle";
+import { ModuleCard } from "@/components/report/ModuleCard";
+import { ModuleIcon } from "@/components/report/ModuleIcon";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { api, fmtDate, scoreTone, toneClass } from "@/lib/api";
 
 const ScoreBlock = ({ label, sub, score, testId, accent }) => (
-  <div className={`px-5 py-4 ${accent ? "bg-indigo-600 text-white" : "bg-surface2"}`} data-testid={testId}>
-    <p className={`overline ${accent ? "text-indigo-100/80" : "text-zinc-600"}`}>{label}</p>
+  <div className={`px-5 py-4 ${accent ? "bg-primary text-primary-foreground" : "bg-surface2"}`} data-testid={testId}>
+    <p className={`overline ${accent ? "text-zinc-900/80" : "text-zinc-600"}`}>{label}</p>
     <p className={`mono mt-1 text-5xl font-semibold leading-none ${
-      accent ? "text-white" : toneClass[scoreTone(score)]}`}>
+ accent ? "text-white" : toneClass[scoreTone(score)]}`}>
       {score ?? "\u2014"}
     </p>
-    <p className={`mono mt-1.5 text-[10px] leading-snug ${accent ? "text-indigo-100/70" : "text-zinc-600"}`}>
+    <p className={`mono mt-1.5 text-xs leading-snug ${accent ? "text-zinc-900/70" : "text-zinc-600"}`}>
       {sub}
     </p>
   </div>
@@ -23,7 +23,7 @@ const SignupCTA = ({ locality, testId }) => (
   <Link
     to="/auth?mode=register"
     data-testid={testId}
-    className="group inline-flex items-center gap-2 rounded-full border border-indigo-500 bg-indigo-600 px-6 py-3 text-sm font-medium text-white shadow-[0_16px_34px_-16px_rgb(79_70_229/0.95)] transition-colors hover:bg-indigo-500"
+    className="group inline-flex items-center gap-2 rounded-md border border-primary bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
   >
     Run your own {locality ? `${locality} ` : ""}report — 5 free
     <ArrowRight size={15} weight="bold" className="transition-transform group-hover:translate-x-1" />
@@ -52,7 +52,7 @@ export default function PublicReport() {
       <div className="grid min-h-screen place-items-center px-6">
         <div className="text-center" data-testid="public-report-error">
           <p className="overline text-zinc-600">Dead link</p>
-          <h1 className="mt-2 font-[Outfit] text-2xl font-light text-zinc-100">{error}</h1>
+          <h1 className="mt-2 text-2xl font-medium text-zinc-100">{error}</h1>
           <div className="mt-6"><SignupCTA testId="public-cta-error" /></div>
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function PublicReport() {
 
   if (!report) {
     return (
-      <p className="mono py-32 text-center text-xs uppercase tracking-[0.3em] text-zinc-600 caret">
+      <p className="mono py-32 text-center text-xs text-zinc-600 caret">
         opening shared report
       </p>
     );
@@ -74,14 +74,14 @@ export default function PublicReport() {
       <header className="glass sticky top-0 z-50 border-b border-zinc-900">
         <div className="mx-auto flex h-14 max-w-[1100px] items-center gap-3 px-4 sm:px-6">
           <Link to="/" className="flex items-center gap-2" data-testid="public-logo">
-            <span className="grid h-7 w-7 place-items-center rounded-md bg-indigo-600">
+            <span className="grid h-7 w-7 place-items-center rounded-md bg-primary">
               <ChartLineUp size={15} weight="bold" className="text-white" />
             </span>
-            <span className="font-[Outfit] text-[15px] font-semibold tracking-tight text-zinc-100">
+            <span className="text-[15px] font-semibold tracking-tight text-zinc-100">
               LocalIQ
             </span>
           </Link>
-          <span className="mono hidden text-[10px] uppercase tracking-widest text-zinc-600 sm:inline">
+          <span className="mono hidden text-xs text-zinc-600 sm:inline">
             shared report
           </span>
           <div className="ml-auto flex items-center gap-2">
@@ -89,7 +89,7 @@ export default function PublicReport() {
             <Link
               to="/auth?mode=register"
               data-testid="public-cta-header"
-              className="mono rounded-full border border-indigo-500 bg-indigo-600 px-3.5 py-1.5 text-[11px] uppercase tracking-wider text-white transition-colors hover:bg-indigo-500"
+              className="mono rounded-md border border-primary bg-primary px-3.5 py-1.5 text-xs text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Get 5 free
             </Link>
@@ -103,7 +103,7 @@ export default function PublicReport() {
             {locality?.pincode} · {locality?.zone} Bengaluru · generated {fmtDate(report.created_at)}
           </p>
           <h1
-            className="mt-2 font-[Outfit] text-4xl font-light tracking-tight text-zinc-50 sm:text-5xl"
+            className="mt-2 text-4xl font-light tracking-tight text-zinc-50 sm:text-5xl"
             data-testid="public-locality-name"
           >
             {locality?.name}
@@ -132,14 +132,14 @@ export default function PublicReport() {
 
           {narrative?.verdict ? (
             <p
-              className="mt-5 max-w-2xl border-l-2 border-indigo-500/60 pl-4 text-sm leading-relaxed text-zinc-300"
+              className="mt-5 max-w-2xl border-l-2 border-zinc-50/60 pl-4 text-sm leading-relaxed text-zinc-300"
               data-testid="public-verdict"
             >
               {narrative.verdict}
             </p>
           ) : null}
 
-          <p className="mono mt-5 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-[10px] uppercase tracking-widest text-emerald-300">
+          <p className="mono mt-5 inline-flex items-center gap-1.5 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-300">
             <ShieldCheck size={13} weight="duotone" /> every number below is citable
           </p>
         </section>
@@ -194,9 +194,9 @@ export default function PublicReport() {
               ))}
             </div>
             <div className="absolute inset-0 grid place-items-center px-4">
-              <div className="panel rounded-xl border border-indigo-500/50 bg-surface px-6 py-6 text-center">
-                <LockKey size={20} weight="duotone" className="mx-auto text-indigo-400" />
-                <p className="mt-2 font-[Outfit] text-lg font-medium text-zinc-50">
+              <div className="panel rounded-xl border border-zinc-50/50 bg-surface px-6 py-6 text-center">
+                <LockKey size={20} weight="duotone" className="mx-auto text-zinc-50" />
+                <p className="mt-2 text-lg font-medium text-zinc-50">
                   {locked.length} more modules in the full report
                 </p>
                 <p className="mx-auto mt-1 max-w-md text-xs leading-relaxed text-zinc-500">
@@ -212,8 +212,8 @@ export default function PublicReport() {
         ) : null}
 
         <section className="mt-10 rounded-xl border border-zinc-900 bg-surface2 px-6 py-8 text-center">
-          <p className="overline text-indigo-400">No listings. Nothing to sell you.</p>
-          <h2 className="mx-auto mt-2 max-w-xl font-[Outfit] text-2xl font-light tracking-tight text-zinc-50">
+          <p className="overline text-zinc-50">No listings. Nothing to sell you.</p>
+          <h2 className="mx-auto mt-2 max-w-xl text-2xl font-medium tracking-tight text-zinc-50">
             Run this for the areas on your own shortlist.
           </h2>
           <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-zinc-500">
@@ -222,7 +222,7 @@ export default function PublicReport() {
           <div className="mt-5"><SignupCTA testId="public-cta-footer" /></div>
         </section>
 
-        <p className="mono mt-10 text-[10px] leading-relaxed text-zinc-700">
+        <p className="mono mt-10 text-xs leading-relaxed text-zinc-700">
           LocalIQ is decision support, not advice. Scores are computed from a published rubric over
           sourced, dated measurements. Media-reported incident counts are not crime rates.
         </p>

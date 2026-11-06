@@ -70,11 +70,10 @@ export default function Account() {
   return (
     <div className="space-y-6 pb-16">
       <div>
-        <p className="overline text-indigo-400">Account</p>
-        <h1 className="mt-2 font-[Outfit] text-3xl font-light tracking-tight text-zinc-100">
+        <h1 className="text-2xl font-semibold  text-zinc-100">
           {user?.name}
         </h1>
-        <p className="mono mt-1 text-[11px] text-zinc-600">{user?.email}</p>
+        <p className="mono mt-1 text-xs text-zinc-600">{user?.email}</p>
       </div>
 
       <div className="grid-skeleton grid border-b border-r border-zinc-900 sm:grid-cols-4">
@@ -105,16 +104,16 @@ export default function Account() {
               ))}
             </ul>
             {entitlement?.plan === "free" ? (
-              <p className="mono mt-4 border border-zinc-800 py-2 text-center text-[10px] uppercase tracking-wider text-zinc-500">
+              <p className="mono mt-4 border border-zinc-800 py-2 text-center text-xs text-zinc-500">
                 Current plan
               </p>
             ) : null}
           </div>
 
           {(plans?.paid || []).map((p) => (
-            <div key={p.key} className={`px-5 py-5 ${p.key === "pro_monthly" ? "bg-indigo-600/10 ring-1 ring-inset ring-indigo-500/30" : "bg-surface"}`}
+            <div key={p.key} className={`px-5 py-5 ${p.key === "pro_monthly" ? "bg-zinc-50/10 ring-1 ring-inset ring-zinc-50/30" : "bg-surface"}`}
                  data-testid={`plan-${p.key}`}>
-              <p className="overline text-indigo-300">{p.label}</p>
+              <p className="overline text-zinc-50">{p.label}</p>
               <p className="mono mt-2 text-3xl text-zinc-100">
                 {p.display}
                 <span className="ml-1 text-xs text-zinc-500">/{p.period}</span>
@@ -122,12 +121,12 @@ export default function Account() {
               <ul className="mt-3 space-y-1.5">
                 {p.features.map((f) => (
                   <li key={f} className="flex gap-2 text-xs text-zinc-400">
-                    <Check size={13} className="mt-0.5 shrink-0 text-indigo-400" /> {f}
+                    <Check size={13} className="mt-0.5 shrink-0 text-zinc-50" /> {f}
                   </li>
                 ))}
               </ul>
               {entitlement?.plan === p.key ? (
-                <p className="mono mt-4 border border-emerald-800 bg-emerald-950/30 py-2 text-center text-[10px] uppercase tracking-wider text-emerald-300">
+                <p className="mono mt-4 border border-emerald-800 bg-emerald-950/30 py-2 text-center text-xs text-emerald-300">
                   Active
                 </p>
               ) : (
@@ -135,7 +134,7 @@ export default function Account() {
                   data-testid={`checkout-${p.key}`}
                   disabled={busy === p.key}
                   onClick={() => checkout(p.key)}
-                  className="mono mt-4 inline-flex w-full items-center justify-center gap-2 border border-indigo-500 bg-indigo-600 py-2.5 text-[11px] uppercase tracking-wider text-white transition-colors hover:bg-indigo-500 disabled:opacity-40"
+                  className="mono mt-4 inline-flex w-full items-center justify-center gap-2 border border-primary bg-primary py-2.5 text-xs text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40"
                 >
                   <CreditCard size={13} /> {busy === p.key ? "Opening…" : "Upgrade"}
                 </button>
@@ -145,7 +144,7 @@ export default function Account() {
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-3 panel border border-zinc-900 bg-surface px-4 py-3">
           <Receipt size={16} className="text-zinc-600" />
-          <p className="mono text-[10px] leading-relaxed text-zinc-500">
+          <p className="mono text-xs leading-relaxed text-zinc-500">
             TEST MODE. Use card 4111 1111 1111 1111, any future expiry, any CVV, OTP 1234. No real
             money moves. Signature verification and webhook handling are live — switching to
             production is a key swap, not a rebuild.
@@ -155,15 +154,15 @@ export default function Account() {
 
       <section className="grid gap-4 lg:grid-cols-2">
         <div className="panel border border-zinc-900 bg-surface px-4 py-3">
-          <p className="overline flex items-center gap-1.5 text-teal-400">
+          <p className="overline flex items-center gap-1.5 text-zinc-50">
             <Cube size={12} weight="duotone" /> Earn reports instead of buying them
           </p>
           <p className="mt-2 text-xs leading-relaxed text-zinc-400">
             Post a photo-backed fact claim about water hours, power cuts, noise or the rent you
-            actually pay. When two other residents corroborate it independently, you earn a free
+            actually pay. Once another resident backs it with their own photo proof, you earn a free
             report credit — and the locality's score gets a signal nobody else has.
           </p>
-          <p className="mono mt-2 text-2xl text-teal-300" data-testid="account-credits">
+          <p className="mono mt-2 text-2xl text-zinc-50" data-testid="account-credits">
             {entitlement?.credits ?? 0} <span className="text-xs text-zinc-600">credits</span>
           </p>
         </div>
@@ -193,15 +192,15 @@ export default function Account() {
         <div className="border border-zinc-900" data-testid="account-runs">
           {(traces?.jobs || []).slice(0, 8).map((j) => (
             <div key={j.job_id} className="flex flex-wrap items-center gap-3 border-b border-zinc-900/60 px-3 py-2 last:border-0">
-              <span className="mono w-20 shrink-0 text-[10px] text-zinc-700">{j.job_id.slice(0, 8)}</span>
+              <span className="mono w-20 shrink-0 text-xs text-zinc-700">{j.job_id.slice(0, 8)}</span>
               <span className="text-xs text-zinc-300">{j.locality_name}</span>
-              <span className="mono text-[10px] text-zinc-600">{j.persona_key}</span>
-              <span className={`mono text-[10px] ${j.status === "done" ? "text-emerald-400" : j.status === "failed" ? "text-red-400" : "text-amber-400"}`}>
+              <span className="mono text-xs text-zinc-600">{j.persona_key}</span>
+              <span className={`mono text-xs ${j.status === "done" ? "text-emerald-400" : j.status === "failed" ? "text-red-400" : "text-amber-400"}`}>
                 {j.status}
               </span>
-              <span className="mono ml-auto text-[10px] text-zinc-700">{fmtDate(j.created_at)}</span>
+              <span className="mono ml-auto text-xs text-zinc-700">{fmtDate(j.created_at)}</span>
               {j.cost ? (
-                <span className="mono text-[10px] text-zinc-600">
+                <span className="mono text-xs text-zinc-600">
                   {j.cost.web_searches}s · {j.cost.llm_calls}c · ${j.cost.est_cost_usd}
                 </span>
               ) : null}

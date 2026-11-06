@@ -83,11 +83,11 @@ export const ContributeDialog = ({ open, onClose, localitySlug, card, onDone, de
       <div className="panel max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-xl border border-zinc-800 bg-surface">
         <header className="flex items-start justify-between border-b border-zinc-900 px-4 py-3">
           <div>
-            <p className="overline text-teal-400">Fill a gap</p>
-            <h3 className="mt-1 font-[Outfit] text-lg font-medium text-zinc-100">
+            <p className="overline text-zinc-50">Fill a gap</p>
+            <h3 className="mt-1 text-lg font-medium text-zinc-100">
               {card ? card.title : "Tell people what it's actually like"}
             </h3>
-            <p className="mt-0.5 text-[11px] text-zinc-500">
+            <p className="mt-0.5 text-xs text-zinc-500">
               {card?.empty?.missing?.length
                 ? `Missing: ${card.empty.missing.join(" · ")}`
                 : "Photo-backed fact claims can move a score. Experiences never do."}
@@ -105,9 +105,9 @@ export const ContributeDialog = ({ open, onClose, localitySlug, card, onDone, de
                 key={k}
                 data-testid={`contribute-kind-${k}`}
                 onClick={() => setKind(k)}
-                className={`mono flex-1 py-2 text-[10px] uppercase tracking-wider transition-colors ${
-                  kind === k ? "bg-teal-600 text-white" : "text-zinc-500 hover:text-zinc-200"
-                }`}
+                className={`mono flex-1 py-2 text-xs transition-colors ${
+ kind === k ? "bg-zinc-50 text-white" : "text-zinc-500 hover:text-zinc-200"
+ }`}
               >
                 {l}
               </button>
@@ -122,7 +122,7 @@ export const ContributeDialog = ({ open, onClose, localitySlug, card, onDone, de
                   data-testid="contribute-claim-type"
                   value={claimType}
                   onChange={(e) => setClaimType(e.target.value)}
-                  className="mono w-full border border-zinc-800 bg-zinc-950 px-2 py-2 text-xs text-zinc-100 outline-none focus:border-teal-500"
+                  className="mono w-full border border-zinc-800 bg-zinc-950 px-2 py-2 text-xs text-zinc-100 outline-none focus:border-zinc-50"
                 >
                   {CLAIM_TYPES.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
                 </select>
@@ -134,7 +134,7 @@ export const ContributeDialog = ({ open, onClose, localitySlug, card, onDone, de
                   value={claimValue}
                   onChange={(e) => setClaimValue(e.target.value)}
                   placeholder="e.g. 6am–8am daily, or 4 cuts/month"
-                  className="mono w-full border border-zinc-800 bg-zinc-950 px-2 py-2 text-xs text-zinc-100 outline-none placeholder:text-zinc-700 focus:border-teal-500"
+                  className="mono w-full border border-zinc-800 bg-zinc-950 px-2 py-2 text-xs text-zinc-100 outline-none placeholder:text-zinc-700 focus:border-zinc-50"
                 />
               </div>
             </div>
@@ -148,9 +148,9 @@ export const ContributeDialog = ({ open, onClose, localitySlug, card, onDone, de
               value={body}
               onChange={(e) => setBody(e.target.value)}
               placeholder="Be specific. Phone numbers and emails are stripped automatically before publication."
-              className="w-full border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm leading-relaxed text-zinc-100 outline-none placeholder:text-zinc-700 focus:border-teal-500"
+              className="w-full border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm leading-relaxed text-zinc-100 outline-none placeholder:text-zinc-700 focus:border-zinc-50"
             />
-            <p className="mono mt-1 text-[9px] text-zinc-700">{body.length}/2000 · minimum 10 characters</p>
+            <p className="mono mt-1 text-xs text-zinc-700">{body.length}/2000 · minimum 10 characters</p>
           </div>
 
           {kind === "fact_claim" ? (
@@ -167,7 +167,7 @@ export const ContributeDialog = ({ open, onClose, localitySlug, card, onDone, de
               <button
                 data-testid="contribute-proof-btn"
                 onClick={() => fileRef.current?.click()}
-                className="mono inline-flex items-center gap-2 border border-zinc-800 px-3 py-2 text-[11px] text-zinc-400 transition-colors hover:border-teal-500 hover:text-teal-300"
+                className="mono inline-flex items-center gap-2 border border-zinc-800 px-3 py-2 text-xs text-zinc-400 transition-colors hover:border-zinc-50 hover:text-zinc-50"
               >
                 <Camera size={14} /> {proofId ? "Replace photo" : "Attach photo or screenshot"}
               </button>
@@ -177,7 +177,7 @@ export const ContributeDialog = ({ open, onClose, localitySlug, card, onDone, de
             </div>
           ) : null}
 
-          <p className="border-l-2 border-zinc-800 pl-2 text-[10px] leading-snug text-zinc-600">
+          <p className="border-l-2 border-zinc-800 pl-2 text-xs leading-snug text-zinc-600">
             Fact claims need independent corroboration from other residents before the scorer treats
             them as fact. A claim that contradicts an official source raises a dispute — it never
             silently overrides. Corroborated contributions earn a free report credit.
@@ -185,14 +185,14 @@ export const ContributeDialog = ({ open, onClose, localitySlug, card, onDone, de
         </div>
 
         <footer className="flex items-center justify-end gap-2 border-t border-zinc-900 px-4 py-3">
-          <button onClick={onClose} className="mono border border-zinc-800 px-3 py-2 text-[11px] uppercase tracking-wider text-zinc-500 hover:text-zinc-200">
+          <button onClick={onClose} className="mono border border-zinc-800 px-3 py-2 text-xs text-zinc-500 hover:text-zinc-200">
             Cancel
           </button>
           <button
             data-testid="contribute-submit"
             disabled={busy || body.trim().length < 10 || (kind === "fact_claim" && !proofId)}
             onClick={submit}
-            className="mono border border-teal-500 bg-teal-600 px-4 py-2 text-[11px] uppercase tracking-wider text-white transition-colors hover:bg-teal-500 disabled:opacity-40"
+            className="mono border border-zinc-50 bg-zinc-50 px-4 py-2 text-xs text-white transition-colors hover:bg-zinc-50 disabled:opacity-40"
           >
             {busy ? "Posting…" : "Post"}
           </button>

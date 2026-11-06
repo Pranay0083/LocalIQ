@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle, Flask, Scales, XCircle } from "@phosphor-icons/react";
-import { ModuleIcon } from "@/components/ModuleIcon";
-import { SourceBadge } from "@/components/Citation";
+import { ModuleIcon } from "@/components/report/ModuleIcon";
+import { SourceBadge } from "@/components/report/Citation";
 import { api } from "@/lib/api";
 
 export default function Trust() {
@@ -25,15 +25,15 @@ export default function Trust() {
     }
   };
 
-  if (!doc) return <p className="mono py-20 text-center text-xs uppercase tracking-[0.3em] text-zinc-600 caret">loading rubric</p>;
+  if (!doc) return <p className="mono py-20 text-center text-xs text-zinc-600 caret">loading rubric</p>;
 
   return (
     <div className="mx-auto max-w-4xl space-y-10 pb-20">
       <header>
-        <p className="overline flex items-center gap-1.5 text-indigo-400">
+        <p className="overline flex items-center gap-1.5 text-zinc-50">
           <Scales size={12} weight="duotone" /> Methodology, published
         </p>
-        <h1 className="mt-3 font-[Outfit] text-4xl font-light leading-tight tracking-tight text-zinc-50">
+        <h1 className="mt-3 text-2xl font-semibold  text-zinc-50">
           A score you cannot interrogate is a score you should not trust.
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-400">
@@ -48,8 +48,8 @@ export default function Trust() {
         <p className="overline mb-3 text-zinc-600">Principles</p>
         <div className="space-y-2">
           {doc.principles.map((p, i) => (
-            <div key={i} className="flex gap-3 border-l-2 border-indigo-500/50 pl-3" data-testid={`principle-${i}`}>
-              <span className="mono text-[10px] text-zinc-700">{String(i + 1).padStart(2, "0")}</span>
+            <div key={i} className="flex gap-3 border-l-2 border-zinc-50/50 pl-3" data-testid={`principle-${i}`}>
+              <span className="mono text-xs text-zinc-700">{String(i + 1).padStart(2, "0")}</span>
               <p className="text-sm leading-relaxed text-zinc-300">{p}</p>
             </div>
           ))}
@@ -62,7 +62,7 @@ export default function Trust() {
           {Object.entries(doc.source_types).map(([key, v]) => (
             <div key={key} className="bg-surface px-3 py-3">
               <SourceBadge type={key} />
-              <p className="mono mt-2 text-[10px] text-zinc-600">trust weight {v.trust}/5</p>
+              <p className="mono mt-2 text-xs text-zinc-600">trust weight {v.trust}/5</p>
             </div>
           ))}
         </div>
@@ -76,14 +76,14 @@ export default function Trust() {
             return (
               <div key={r.module} className="panel border border-zinc-900 bg-surface px-4 py-3" data-testid={`rubric-${r.module}`}>
                 <div className="flex flex-wrap items-center gap-2">
-                  <ModuleIcon module={r.module} size={16} className="text-indigo-400" />
+                  <ModuleIcon module={r.module} size={16} className="text-zinc-50" />
                   <h3 className="text-sm font-medium text-zinc-100">{meta?.label || r.module}</h3>
                   <span className="overline border border-zinc-800 px-1.5 py-[2px] text-zinc-600">{meta?.tier}</span>
                 </div>
-                <p className="mono mt-2 border-l-2 border-zinc-800 pl-2 text-[11px] leading-relaxed text-emerald-300/80">
+                <p className="mono mt-2 border-l-2 border-zinc-800 pl-2 text-xs leading-relaxed text-emerald-300/80">
                   {r.formula}
                 </p>
-                <p className="mt-1.5 text-[11px] leading-snug text-zinc-500">Inputs: {r.inputs}</p>
+                <p className="mt-1.5 text-xs leading-snug text-zinc-500">Inputs: {r.inputs}</p>
               </div>
             );
           })}
@@ -96,7 +96,7 @@ export default function Trust() {
           <table className="w-full text-left" data-testid="persona-weight-table">
             <thead>
               <tr className="border-b border-zinc-900">
-                <th className="overline sticky left-0 z-10 border-r border-zinc-900 bg-surface shadow-[6px_0_10px_-8px_rgb(15_23_42/0.35)] px-3 py-2 text-zinc-600">Module</th>
+                <th className="overline sticky left-0 z-10 border-r border-zinc-900 bg-surface px-3 py-2 text-zinc-600">Module</th>
                 {doc.personas.map((p) => (
                   <th key={p.key} className="overline px-2 py-2 text-zinc-500">{p.label.split(" ")[0]}</th>
                 ))}
@@ -106,12 +106,12 @@ export default function Trust() {
             <tbody>
               {doc.modules.map((m) => (
                 <tr key={m.key} className="border-b border-zinc-900/60">
-                  <td className="sticky left-0 z-10 border-r border-zinc-900 bg-surface shadow-[6px_0_10px_-8px_rgb(15_23_42/0.35)] px-3 py-1.5 text-xs text-zinc-300">{m.label}</td>
+                  <td className="sticky left-0 z-10 border-r border-zinc-900 bg-surface px-3 py-1.5 text-xs text-zinc-300">{m.label}</td>
                   {doc.personas.map((p) => {
                     const w = p.weights[m.key] ?? 0;
                     return (
                       <td key={p.key} className="px-2 py-1.5">
-                        <span className={`mono text-xs ${w === 3 ? "text-indigo-300" : w === 2 ? "text-zinc-300" : w === 1 ? "text-zinc-500" : "text-zinc-800"}`}>
+                        <span className={`mono text-xs ${w === 3 ? "text-zinc-50" : w === 2 ? "text-zinc-300" : w === 1 ? "text-zinc-500" : "text-zinc-800"}`}>
                           {w}
                         </span>
                       </td>
@@ -123,7 +123,7 @@ export default function Trust() {
             </tbody>
           </table>
         </div>
-        <p className="mt-2 text-[11px] leading-snug text-zinc-600">
+        <p className="mt-2 text-xs leading-snug text-zinc-600">
           Weight 0 means the module does not appear in that persona's report at all. Weight 3 means it
           dominates. The neutral baseline weights every module at 1 — that is the number shown beside
           your personalised score, so you can always see how much the lens moved it.
@@ -149,12 +149,12 @@ export default function Trust() {
             data-testid="run-evals"
             disabled={busy}
             onClick={runEvals}
-            className="mono inline-flex items-center gap-1.5 border border-indigo-500/60 bg-indigo-500/10 px-3 py-1.5 text-[10px] uppercase tracking-wider text-indigo-300 transition-colors hover:bg-indigo-500/20 disabled:opacity-40"
+            className="mono inline-flex items-center gap-1.5 border border-zinc-50/60 bg-zinc-50/10 px-3 py-1.5 text-xs text-zinc-50 transition-colors hover:bg-zinc-50/20 disabled:opacity-40"
           >
             <Flask size={12} weight="duotone" /> {busy ? "Running…" : "Run checks now"}
           </button>
         </div>
-        <p className="mt-2 text-[11px] leading-snug text-zinc-500">
+        <p className="mt-2 text-xs leading-snug text-zinc-500">
           Deterministic checks over hand-verified fixtures: primitive arithmetic, CPCB conversion,
           score regression, determinism across runs, absence handling, persona sensitivity, and
           groundedness sampling over real stored reports.
@@ -177,11 +177,11 @@ export default function Trust() {
               {Object.entries(evals.summary.suites || {}).map(([suite, s]) => (
                 <span
                   key={suite}
-                  className={`mono border px-2 py-1 text-[10px] ${
-                    s.passed === s.total
-                      ? "border-emerald-500/40 text-emerald-300"
-                      : "border-red-500/40 text-red-300"
-                  }`}
+                  className={`mono border px-2 py-1 text-xs ${
+ s.passed === s.total
+ ? "border-emerald-500/40 text-emerald-300"
+ : "border-red-500/40 text-red-300"
+ }`}
                 >
                   {suite} {s.passed}/{s.total}
                 </span>
@@ -196,8 +196,8 @@ export default function Trust() {
                     <XCircle size={13} weight="fill" className="mt-0.5 shrink-0 text-red-500" />
                   )}
                   <div className="min-w-0">
-                    <p className="mono text-[11px] text-zinc-300">{r.check}</p>
-                    {r.detail ? <p className="mono text-[10px] text-zinc-600">{r.detail}</p> : null}
+                    <p className="mono text-xs text-zinc-300">{r.check}</p>
+                    {r.detail ? <p className="mono text-xs text-zinc-600">{r.detail}</p> : null}
                   </div>
                 </div>
               ))}
@@ -206,11 +206,11 @@ export default function Trust() {
               <p className="overline text-zinc-600">Persona sensitivity on the fixture</p>
               <div className="mt-1.5 flex flex-wrap gap-3">
                 {Object.entries(evals.summary.persona_scores).map(([k, v]) => (
-                  <span key={k} className="mono text-[11px] text-zinc-400">
-                    {k}: <span className="text-indigo-300">{v}</span>
+                  <span key={k} className="mono text-xs text-zinc-400">
+                    {k}: <span className="text-zinc-50">{v}</span>
                   </span>
                 ))}
-                <span className="mono text-[11px] text-zinc-500">baseline: {evals.summary.baseline}</span>
+                <span className="mono text-xs text-zinc-500">baseline: {evals.summary.baseline}</span>
               </div>
             </div>
           </div>

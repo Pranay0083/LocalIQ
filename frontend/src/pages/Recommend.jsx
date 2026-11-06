@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowRight, LockKey, Sparkle } from "@phosphor-icons/react";
-import { ModuleIcon } from "@/components/ModuleIcon";
+import { ModuleIcon } from "@/components/report/ModuleIcon";
 import { useAuth } from "@/context/AuthContext";
 import { api, errMessage, scoreTone, toneBg, toneClass } from "@/lib/api";
 
@@ -43,8 +43,7 @@ export default function Recommend() {
   return (
     <div className="space-y-6 pb-16">
       <div>
-        <p className="overline text-indigo-400">Recommendation agent</p>
-        <h1 className="mt-2 font-[Outfit] text-3xl font-light tracking-tight text-zinc-100">
+        <h1 className="text-2xl font-semibold  text-zinc-100">
           Given who you are, where should you even look?
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-zinc-500">
@@ -58,7 +57,7 @@ export default function Recommend() {
         <div>
           {!result && !busy ? (
             <div className="panel border border-zinc-900 bg-surface px-5 py-10 text-center" data-testid="recommend-empty">
-              <Sparkle size={26} weight="duotone" className="mx-auto text-indigo-400" />
+              <Sparkle size={26} weight="duotone" className="mx-auto text-zinc-50" />
               <p className="mt-3 text-sm text-zinc-400">
                 {hasProfile
                   ? "Your profile is set. Run the agent and it will rank localities for you."
@@ -66,8 +65,8 @@ export default function Recommend() {
               </p>
               {locked ? (
                 <>
-                  <div className="mx-auto mt-5 grid h-11 w-11 place-items-center border border-indigo-500/40 bg-indigo-500/10">
-                    <LockKey size={20} weight="duotone" className="text-indigo-400" />
+                  <div className="mx-auto mt-5 grid h-11 w-11 place-items-center border border-zinc-50/40 bg-zinc-50/10">
+                    <LockKey size={20} weight="duotone" className="text-zinc-50" />
                   </div>
                   <p className="mt-3 text-sm text-zinc-400">
                     You have used your free recommendation run.
@@ -75,7 +74,7 @@ export default function Recommend() {
                   <button
                     data-testid="recommend-upgrade"
                     onClick={() => navigate("/app/account")}
-                    className="mono mt-4 border border-indigo-500 bg-indigo-600 px-5 py-2.5 text-[11px] uppercase tracking-wider text-white hover:bg-indigo-500"
+                    className="mono mt-4 border border-primary bg-primary px-5 py-2.5 text-xs text-primary-foreground hover:bg-primary/90"
                   >
                     Upgrade for unlimited runs
                   </button>
@@ -84,7 +83,7 @@ export default function Recommend() {
                 <button
                   data-testid="recommend-run"
                   onClick={run}
-                  className="mono mt-5 inline-flex items-center gap-2 border border-indigo-500 bg-indigo-600 px-5 py-3 text-[11px] uppercase tracking-wider text-white transition-colors hover:bg-indigo-500"
+                  className="mono mt-5 inline-flex items-center gap-2 border border-primary bg-primary px-5 py-3 text-xs text-primary-foreground transition-colors hover:bg-primary/90"
                 >
                   <Sparkle size={13} weight="duotone" /> Rank localities for me
                 </button>
@@ -93,7 +92,7 @@ export default function Recommend() {
           ) : null}
 
           {busy ? (
-            <p className="mono py-14 text-center text-xs uppercase tracking-[0.3em] text-zinc-600 caret">
+            <p className="mono py-14 text-center text-xs text-zinc-600 caret">
               scoring candidate localities
             </p>
           ) : null}
@@ -108,7 +107,7 @@ export default function Recommend() {
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="mono grid h-6 w-6 shrink-0 place-items-center border border-indigo-500/50 text-[11px] text-indigo-300">
+                          <span className="mono grid h-6 w-6 shrink-0 place-items-center border border-zinc-50/50 text-xs text-zinc-50">
                             {i + 1}
                           </span>
                           <h3 className="truncate text-base font-medium text-zinc-100">{c.name}</h3>
@@ -118,12 +117,12 @@ export default function Recommend() {
                       </div>
                       <div className="shrink-0 text-right">
                         <p className={`mono text-3xl leading-none ${toneClass[scoreTone(c.score)]}`}>{c.score}</p>
-                        <p className="mono text-[9px] text-zinc-600">base {c.baseline}</p>
+                        <p className="mono text-xs text-zinc-600">base {c.baseline}</p>
                       </div>
                     </div>
 
                     {pick?.why ? (
-                      <p className="mt-3 border-l-2 border-indigo-500/60 pl-3 text-sm leading-relaxed text-zinc-300">
+                      <p className="mt-3 border-l-2 border-zinc-50/60 pl-3 text-sm leading-relaxed text-zinc-300">
                         {pick.why}
                       </p>
                     ) : null}
@@ -141,7 +140,7 @@ export default function Recommend() {
                           <div className="mt-1 h-[3px] w-full bg-zinc-900">
                             <div className={`h-full ${toneBg[scoreTone(m.score)]}`} style={{ width: `${m.score || 0}%` }} />
                           </div>
-                          <p className="mono mt-1 text-[10px] text-zinc-400">{m.score ?? "—"}</p>
+                          <p className="mono mt-1 text-xs text-zinc-400">{m.score ?? "—"}</p>
                         </div>
                       ))}
                     </div>
@@ -159,7 +158,7 @@ export default function Recommend() {
                           else toast.error(errMessage(error));
                         }
                       }}
-                      className="mono mt-3 inline-flex items-center gap-1.5 border border-zinc-800 px-3 py-1.5 text-[10px] uppercase tracking-wider text-zinc-400 transition-colors hover:border-indigo-500 hover:text-indigo-300"
+                      className="mono mt-3 inline-flex items-center gap-1.5 border border-zinc-800 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:border-zinc-50 hover:text-zinc-50"
                     >
                       Full report <ArrowRight size={11} />
                     </button>
@@ -176,16 +175,16 @@ export default function Recommend() {
             <div className="mt-2 space-y-1">
               {Object.entries(profile).filter(([, v]) => v).map(([k, v]) => (
                 <div key={k} className="flex items-start justify-between gap-2">
-                  <span className="mono text-[10px] uppercase text-zinc-600">{k.replace(/_/g, " ")}</span>
-                  <span className="max-w-[60%] text-right text-[11px] text-zinc-300">{String(v)}</span>
+                  <span className="mono text-xs text-zinc-600">{k.replace(/_/g, " ")}</span>
+                  <span className="max-w-[60%] text-right text-xs text-zinc-300">{String(v)}</span>
                 </div>
               ))}
-              {!hasProfile ? <p className="text-[11px] text-zinc-600">No profile saved.</p> : null}
+              {!hasProfile ? <p className="text-xs text-zinc-600">No profile saved.</p> : null}
             </div>
             <button
               data-testid="recommend-edit-profile"
               onClick={() => navigate("/onboarding")}
-              className="mono mt-3 w-full border border-zinc-800 py-2 text-[10px] uppercase tracking-wider text-zinc-500 hover:border-indigo-500 hover:text-indigo-300"
+              className="mono mt-3 w-full border border-zinc-800 py-2 text-xs text-zinc-500 hover:border-zinc-50 hover:text-zinc-50"
             >
               Edit profile
             </button>
@@ -196,11 +195,11 @@ export default function Recommend() {
               <p className="overline text-zinc-600">How it ranked</p>
               <p className="mt-2 text-xs leading-relaxed text-zinc-400">{result.narrative.reasoning}</p>
               {result.narrative.ignored ? (
-                <p className="mt-2 border-t border-zinc-900 pt-2 text-[11px] text-zinc-600">
+                <p className="mt-2 border-t border-zinc-900 pt-2 text-xs text-zinc-600">
                   Not addressed by the data: {result.narrative.ignored}
                 </p>
               ) : null}
-              <p className="mono mt-2 text-[10px] text-zinc-700">{result.evaluated} localities evaluated</p>
+              <p className="mono mt-2 text-xs text-zinc-700">{result.evaluated} localities evaluated</p>
             </div>
           ) : null}
 

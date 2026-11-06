@@ -34,10 +34,10 @@ export const toneBg = {
 
 export const SOURCE_META = {
   live_api: { label: "Live API", cls: "text-blue-300 border-blue-500/40 bg-blue-500/10" },
-  computed: { label: "Computed \u00b7 OSM", cls: "text-violet-300 border-violet-500/40 bg-violet-500/10" },
+  computed: { label: "Computed \u00b7 OSM", cls: "text-zinc-50 border-zinc-50/40 bg-zinc-50/10" },
   official: { label: "Official", cls: "text-emerald-300 border-emerald-500/40 bg-emerald-500/10" },
   media: { label: "News / Media", cls: "text-amber-300 border-amber-500/40 bg-amber-500/10" },
-  community_verified: { label: "Community-verified", cls: "text-teal-300 border-teal-500/40 bg-teal-500/10" },
+  community_verified: { label: "Community-verified", cls: "text-zinc-50 border-zinc-50/40 bg-zinc-50/10" },
   community_unverified: { label: "Community-unverified", cls: "text-slate-300 border-slate-500/40 bg-slate-500/10" },
   forum: { label: "Forum / Unverified", cls: "text-slate-400 border-slate-600/40 bg-slate-600/10" },
 };

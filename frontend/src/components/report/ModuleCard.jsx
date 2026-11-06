@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { CaretDown, PlusCircle, PushPin, X } from "@phosphor-icons/react";
-import { CitationDrawer } from "@/components/Citation";
-import { ModuleIcon } from "@/components/ModuleIcon";
-import { Render } from "@/components/Renderers";
+import { CitationDrawer } from "@/components/report/Citation";
+import { ModuleIcon } from "@/components/report/ModuleIcon";
+import { Render } from "@/components/report/Renderers";
 import { scoreTone, toneBg, toneClass } from "@/lib/api";
 
 const CONFIDENCE_COPY = {
@@ -19,7 +19,7 @@ export const ModuleCard = ({ card, index, onContribute, onDrop, onPin, pinned, r
   return (
     <section
       data-testid={`module-card-${card.module}`}
-      className="lq-in panel min-w-0 overflow-hidden rounded-lg border border-zinc-900 bg-surface"
+      className="min-w-0 overflow-hidden rounded-lg border border-zinc-900 bg-surface"
       style={{ animationDelay: `${Math.min(index, 8) * 45}ms` }}
     >
       <header className="flex items-start justify-between gap-3 border-b border-zinc-900 px-4 py-3">
@@ -40,12 +40,12 @@ export const ModuleCard = ({ card, index, onContribute, onDrop, onPin, pinned, r
               <span className="overline text-zinc-700">weight {card.weight}</span>
             </span>
             <span className="mt-1 flex flex-wrap items-center gap-2">
-              <span className={`mono text-[10px] ${card.score === null ? "text-zinc-600" : toneClass[tone]}`}>
+              <span className={`mono text-xs ${card.score === null ? "text-zinc-600" : toneClass[tone]}`}>
                 {CONFIDENCE_COPY[card.confidence] || card.confidence}
               </span>
-              <span className="mono text-[10px] text-zinc-700">updated {card.freshness}</span>
+              <span className="mono text-xs text-zinc-700">updated {card.freshness}</span>
               {card.city?.city_rank ? (
-                <span className="mono text-[10px] text-zinc-600">{card.city.city_rank} of Bengaluru</span>
+                <span className="mono text-xs text-zinc-600">{card.city.city_rank} of Bengaluru</span>
               ) : null}
             </span>
           </span>
@@ -57,7 +57,7 @@ export const ModuleCard = ({ card, index, onContribute, onDrop, onPin, pinned, r
               {card.score === null ? "\u2014" : Math.round(card.score)}
             </p>
             {card.city?.city_median !== undefined ? (
-              <p className="mono mt-0.5 text-[10px] text-zinc-600" data-testid={`city-compare-${card.module}`}>
+              <p className="mono mt-0.5 text-sm text-zinc-600" data-testid={`city-compare-${card.module}`}>
                 city med {card.city.city_median}
                 <span className={card.city.delta > 0 ? "text-emerald-500" : card.city.delta < 0 ? "text-red-500" : ""}>
                   {" "}{card.city.delta > 0 ? "+" : ""}{card.city.delta}
@@ -71,7 +71,7 @@ export const ModuleCard = ({ card, index, onContribute, onDrop, onPin, pinned, r
                 onClick={() => onPin?.(card.module)}
                 data-testid={`module-pin-${card.module}`}
                 title="Pin this module to the top"
-                className={`border border-zinc-800 p-1 transition-colors hover:border-indigo-500/60 ${pinned ? "text-indigo-400" : "text-zinc-600"}`}
+                className={`border border-zinc-800 p-1 transition-colors hover:border-zinc-50/60 ${pinned ? "text-zinc-50" : "text-zinc-600"}`}
               >
                 <PushPin size={12} weight={pinned ? "fill" : "regular"} />
               </button>
@@ -101,7 +101,7 @@ export const ModuleCard = ({ card, index, onContribute, onDrop, onPin, pinned, r
       {open ? (
         <div className="space-y-4 px-4 py-4">
           {card.narrative ? (
-            <p className="border-l-2 border-indigo-500/50 pl-3 text-sm leading-relaxed text-zinc-300">
+            <p className="border-l-2 border-zinc-50/50 pl-3 text-sm leading-relaxed text-zinc-300">
               {card.narrative}
             </p>
           ) : null}
@@ -112,14 +112,14 @@ export const ModuleCard = ({ card, index, onContribute, onDrop, onPin, pinned, r
               {card.empty.missing?.length ? (
                 <ul className="mt-2 space-y-1">
                   {card.empty.missing.map((m) => (
-                    <li key={m} className="mono text-[11px] text-zinc-600">missing · {m}</li>
+                    <li key={m} className="mono text-xs text-zinc-600">missing · {m}</li>
                   ))}
                 </ul>
               ) : null}
               <button
                 onClick={() => onContribute?.(card)}
                 data-testid={`module-contribute-${card.module}`}
-                className="mono mt-3 inline-flex items-center gap-1.5 border border-indigo-500/50 bg-indigo-500/10 px-3 py-1.5 text-[11px] text-indigo-300 transition-colors hover:bg-indigo-500/20"
+                className="mono mt-3 inline-flex items-center gap-1.5 border border-zinc-50/50 bg-zinc-50/10 px-3 py-1.5 text-xs text-zinc-50 transition-colors hover:bg-zinc-50/20"
               >
                 <PlusCircle size={13} /> {card.empty.cta_label}
               </button>
@@ -129,7 +129,7 @@ export const ModuleCard = ({ card, index, onContribute, onDrop, onPin, pinned, r
           )}
 
           <div className="flex flex-wrap items-center justify-between gap-2 border-t border-zinc-900 pt-3">
-            <p className="max-w-[70%] text-[11px] leading-snug text-zinc-600">{card.reason}</p>
+            <p className="max-w-[70%] text-sm leading-snug text-zinc-600">{card.reason}</p>
             <CitationDrawer citations={card.citations} testId={`citations-${card.module}`} />
           </div>
 
@@ -137,7 +137,7 @@ export const ModuleCard = ({ card, index, onContribute, onDrop, onPin, pinned, r
             <button
               onClick={() => onContribute?.(card)}
               data-testid={`module-contribute-${card.module}`}
-              className="mono inline-flex items-center gap-1.5 border border-zinc-800 px-3 py-1.5 text-[11px] text-zinc-400 transition-colors hover:border-indigo-500/50 hover:text-indigo-300"
+              className="mono inline-flex items-center gap-1.5 border border-zinc-800 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:border-zinc-50/50 hover:text-zinc-50"
             >
               <PlusCircle size={13} /> {card.contribute.cta}
             </button>

@@ -31,7 +31,7 @@ const ChartTip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="panel rounded-md border border-zinc-800 bg-surface px-2.5 py-2">
-      <p className="mono text-[10px] uppercase tracking-widest text-zinc-500">{label}</p>
+      <p className="mono text-sm text-zinc-500">{label}</p>
       {payload.map((p) => (
         <p key={p.dataKey} className="mono text-xs text-zinc-100">
           {p.name}: <span style={{ color: p.color }}>{p.value}</span>
@@ -47,7 +47,7 @@ const Empty = ({ message }) => (
     className="flex items-center gap-2 border border-dashed border-zinc-800 px-3 py-4"
   >
     <Warning size={15} className="text-zinc-600" />
-    <p className="text-xs text-zinc-500">{message}</p>
+    <p className="text-sm text-zinc-500">{message}</p>
   </div>
 );
 
@@ -61,7 +61,7 @@ const Gauge = ({ data }) => {
         <span className="mono text-5xl font-semibold leading-none text-zinc-50">{data.value}</span>
         <div className="pb-1">
           <p className={`text-sm font-semibold ${toneClass[data.tone] || "text-zinc-300"}`}>{data.band}</p>
-          <p className="mono text-[10px] text-zinc-500">{data.caption}</p>
+          <p className="mono text-sm text-zinc-500">{data.caption}</p>
         </div>
       </div>
       <div className="relative mt-3 h-2 w-full bg-zinc-900">
@@ -71,9 +71,9 @@ const Gauge = ({ data }) => {
         {(data.segments || []).map((s) => (
           <span
             key={s.label}
-            className={`mono text-[9px] ${
-              data.value >= s.from && data.value <= s.to ? "text-zinc-100" : "text-zinc-600"
-            }`}
+            className={`mono text-xs ${
+ data.value >= s.from && data.value <= s.to ? "text-zinc-100" : "text-zinc-600"
+ }`}
           >
             {s.label} {s.from}–{s.to}
           </span>
@@ -118,7 +118,7 @@ const StatGrid = ({ data }) => {
           <p className="overline text-zinc-600">{s.label}</p>
           <p className="mono mt-1 text-lg text-zinc-100">
             {String(s.value)}
-            {s.unit ? <span className="ml-1 text-[10px] text-zinc-500">{s.unit}</span> : null}
+            {s.unit ? <span className="ml-1 text-xs text-zinc-500">{s.unit}</span> : null}
           </p>
         </div>
       ))}
@@ -133,7 +133,7 @@ const DistanceList = ({ data }) => {
       {data.items.map((item, i) => (
         <li key={i} className="flex items-center justify-between gap-3 px-3 py-2" data-testid={`distance-item-${i}`}>
           <div className="flex min-w-0 items-center gap-2">
-            <MapPin size={13} weight="duotone" className="shrink-0 text-indigo-400" />
+            <MapPin size={13} weight="duotone" className="shrink-0 text-zinc-50" />
             <span className="truncate text-xs text-zinc-200">{item.name}</span>
             <span className="overline shrink-0 text-zinc-600">{item.kind}</span>
           </div>
@@ -162,9 +162,9 @@ const Timeline = ({ data }) => {
     <ol className="relative border-l border-zinc-800 pl-4" data-testid="render-timeline">
       {data.events.map((e, i) => (
         <li key={i} className="relative pb-4 last:pb-0" data-testid={`timeline-event-${i}`}>
-          <span className="absolute -left-[21px] top-1.5 h-2 w-2 border border-indigo-400 bg-zinc-950" />
+          <span className="absolute -left-[21px] top-1.5 h-2 w-2 border border-zinc-50 bg-zinc-950" />
           <div className="flex flex-wrap items-center gap-2">
-            <span className="mono text-[11px] text-indigo-300">{e.date}</span>
+            <span className="mono text-xs text-zinc-50">{e.date}</span>
             {e.status ? (
               <span className={`overline border px-1.5 py-[2px] ${statusTone[e.status] || "border-zinc-700 text-zinc-400"}`}>
                 {String(e.status).replace(/_/g, " ")}
@@ -173,9 +173,9 @@ const Timeline = ({ data }) => {
             {e.impact ? <span className="overline text-zinc-600">impact: {e.impact}</span> : null}
           </div>
           <p className="mt-1 text-sm text-zinc-100">{e.title}</p>
-          {e.description ? <p className="mt-0.5 text-xs leading-snug text-zinc-500">{e.description}</p> : null}
+          {e.description ? <p className="mt-0.5 text-sm leading-snug text-zinc-500">{e.description}</p> : null}
           {e.source_url ? (
-            <a href={e.source_url} target="_blank" rel="noreferrer" className="mono mt-1 inline-flex items-center gap-1 text-[10px] text-indigo-400 hover:underline">
+            <a href={e.source_url} target="_blank" rel="noreferrer" className="mono mt-1 inline-flex items-center gap-1 text-xs text-zinc-50 hover:underline">
               <ArrowSquareOut size={10} /> {e.source_name || "source"}
             </a>
           ) : null}
@@ -187,7 +187,7 @@ const Timeline = ({ data }) => {
 
 const IncidentList = ({ data }) => (
   <div data-testid="render-incident-list">
-    <p className="mb-2.5 border-l-2 border-amber-500/60 bg-amber-500/5 px-3 py-2 text-[11px] leading-snug text-amber-200/80">
+    <p className="mb-2.5 border-l-2 border-amber-500/60 bg-amber-500/5 px-3 py-2 text-sm leading-snug text-amber-200/80">
       {data.caption}
     </p>
     {!data.items?.length ? (
@@ -197,15 +197,15 @@ const IncidentList = ({ data }) => (
         {data.items.map((inc, i) => (
           <li key={i} className="px-3 py-2.5" data-testid={`incident-${i}`}>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="mono text-[11px] text-zinc-400">{inc.date || "undated"}</span>
+              <span className="mono text-xs text-zinc-400">{inc.date || "undated"}</span>
               {inc.category ? (
                 <span className="overline border border-zinc-700 px-1.5 py-[2px] text-zinc-400">{inc.category}</span>
               ) : null}
-              {inc.location_hint ? <span className="text-[10px] text-zinc-600">{inc.location_hint}</span> : null}
+              {inc.location_hint ? <span className="text-xs text-zinc-600">{inc.location_hint}</span> : null}
             </div>
-            <p className="mt-1 text-xs leading-snug text-zinc-200">{inc.headline}</p>
+            <p className="mt-1 text-sm leading-snug text-zinc-200">{inc.headline}</p>
             {inc.source_url ? (
-              <a href={inc.source_url} target="_blank" rel="noreferrer" className="mono mt-1 inline-flex items-center gap-1 text-[10px] text-indigo-400 hover:underline">
+              <a href={inc.source_url} target="_blank" rel="noreferrer" className="mono mt-1 inline-flex items-center gap-1 text-xs text-zinc-50 hover:underline">
                 <ArrowSquareOut size={10} /> {inc.source_name || "source"}
               </a>
             ) : null}
@@ -218,16 +218,16 @@ const IncidentList = ({ data }) => (
 
 const QuoteList = ({ data }) => (
   <div data-testid="render-quote-list">
-    {data.caption ? <p className="mb-2 text-[11px] text-zinc-500">{data.caption}</p> : null}
+    {data.caption ? <p className="mb-2 text-sm text-zinc-500">{data.caption}</p> : null}
     <div className="space-y-2">
       {(data.items || []).map((q, i) => (
         <div key={i} className="border-l-2 border-zinc-800 pl-3" data-testid={`quote-${i}`}>
           <Quotes size={12} className="text-zinc-700" weight="fill" />
-          <p className="text-xs italic leading-snug text-zinc-300">{q.quote}</p>
+          <p className="text-sm italic leading-snug text-zinc-300">{q.quote}</p>
           <div className="mt-1 flex items-center gap-2">
-            <span className="mono text-[10px] text-zinc-600">{q.source_name}</span>
+            <span className="mono text-xs text-zinc-600">{q.source_name}</span>
             {q.source_url ? (
-              <a href={q.source_url} target="_blank" rel="noreferrer" className="mono text-[10px] text-indigo-400 hover:underline">
+              <a href={q.source_url} target="_blank" rel="noreferrer" className="mono text-xs text-zinc-50 hover:underline">
                 source
               </a>
             ) : null}

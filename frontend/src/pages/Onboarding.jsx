@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { ArrowLeft, ArrowRight, Check } from "@phosphor-icons/react";
 import { useAuth } from "@/context/AuthContext";
 import { api, errMessage } from "@/lib/api";
-import { ModuleIcon } from "@/components/ModuleIcon";
+import { ModuleIcon } from "@/components/report/ModuleIcon";
 
 const STAGES = [
   ["buyer", "Buying a home", "Multi-crore decision, months of research"],
@@ -100,13 +100,13 @@ export default function Onboarding() {
       onClick={onClick}
       data-testid={testId}
       className={`border px-4 py-3 text-left transition-colors ${
-        active
-          ? "border-indigo-500 bg-indigo-500/10"
-          : "border-zinc-800 bg-surface hover:border-zinc-700"
-      }`}
+ active
+ ? "border-zinc-50 bg-zinc-50/10"
+ : "border-zinc-800 bg-surface hover:border-zinc-700"
+ }`}
     >
-      <p className={`text-sm font-medium ${active ? "text-indigo-200" : "text-zinc-200"}`}>{title}</p>
-      {sub ? <p className="mt-0.5 text-[11px] leading-snug text-zinc-500">{sub}</p> : null}
+      <p className={`text-sm font-medium ${active ? "text-zinc-50" : "text-zinc-200"}`}>{title}</p>
+      {sub ? <p className="mt-0.5 text-xs leading-snug text-zinc-500">{sub}</p> : null}
     </button>
   );
 
@@ -146,7 +146,7 @@ export default function Onboarding() {
               data-testid="onb-work-locality"
               value={form.work_locality}
               onChange={(e) => setForm({ ...form, work_locality: e.target.value })}
-              className="mono w-full border border-zinc-800 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-100 outline-none focus:border-indigo-500"
+              className="mono w-full border border-zinc-800 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-100 outline-none focus:border-zinc-50"
             >
               <option value="">Not sure / not applicable</option>
               {localities.map((l) => (
@@ -195,7 +195,7 @@ export default function Onboarding() {
             value={form.free_text}
             onChange={(e) => setForm({ ...form, free_text: e.target.value })}
             placeholder="I'm a backend engineer, fully remote, I have a labrador and I play badminton four evenings a week. I hate traffic noise and I need power that doesn't drop during calls."
-            className="w-full border border-zinc-800 bg-zinc-950 px-3 py-2.5 text-sm leading-relaxed text-zinc-100 outline-none placeholder:text-zinc-700 focus:border-indigo-500"
+            className="w-full border border-zinc-800 bg-zinc-950 px-3 py-2.5 text-sm leading-relaxed text-zinc-100 outline-none placeholder:text-zinc-700 focus:border-zinc-50"
           />
           <div>
             <p className="overline mb-2 text-zinc-600">Your lens — you can change this any time</p>
@@ -206,23 +206,23 @@ export default function Onboarding() {
                   data-testid={`onb-persona-${p.key}`}
                   onClick={() => setForm({ ...form, persona_key: p.key })}
                   className={`border px-4 py-3 text-left transition-colors ${
-                    form.persona_key === p.key
-                      ? "border-indigo-500 bg-indigo-500/10"
-                      : "border-zinc-800 bg-surface hover:border-zinc-700"
-                  }`}
+ form.persona_key === p.key
+ ? "border-zinc-50 bg-zinc-50/10"
+ : "border-zinc-800 bg-surface hover:border-zinc-700"
+ }`}
                 >
                   <p className="flex items-center gap-2 text-sm font-medium text-zinc-100">
                     {p.label}
-                    {form.persona_key === p.key ? <Check size={13} className="text-indigo-400" /> : null}
+                    {form.persona_key === p.key ? <Check size={13} className="text-zinc-50" /> : null}
                   </p>
-                  <p className="mt-1 text-[11px] leading-snug text-zinc-500">{p.summary}</p>
+                  <p className="mt-1 text-xs leading-snug text-zinc-500">{p.summary}</p>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {p.modules.slice(0, 6).map((m) => (
                       <span key={m} className="text-zinc-600">
                         <ModuleIcon module={m} size={13} />
                       </span>
                     ))}
-                    <span className="mono text-[9px] text-zinc-700">+{Math.max(0, p.modules.length - 6)}</span>
+                    <span className="mono text-xs text-zinc-700">+{Math.max(0, p.modules.length - 6)}</span>
                   </div>
                 </button>
               ))}
@@ -239,13 +239,13 @@ export default function Onboarding() {
     <div className="mx-auto min-h-screen max-w-3xl px-5 py-12">
       <div className="mb-8 flex items-center gap-2">
         {steps.map((_, i) => (
-          <div key={i} className={`h-[3px] flex-1 ${i <= step ? "bg-indigo-500" : "bg-zinc-900"}`}
+          <div key={i} className={`h-[3px] flex-1 ${i <= step ? "bg-primary" : "bg-zinc-900"}`}
                style={{ transition: "background-color 300ms ease" }} />
         ))}
       </div>
 
-      <p className="overline text-indigo-400">Step {step + 1} of {steps.length}</p>
-      <h1 className="mt-3 font-[Outfit] text-3xl font-light tracking-tight text-zinc-100">{current.title}</h1>
+      <p className="overline text-zinc-50">Step {step + 1} of {steps.length}</p>
+      <h1 className="mt-3 text-2xl font-semibold  text-zinc-100">{current.title}</h1>
       <p className="mt-2 text-sm text-zinc-500">{current.hint}</p>
 
       <div className="mt-7 lq-in" key={step}>{current.body}</div>
@@ -254,7 +254,7 @@ export default function Onboarding() {
         <button
           data-testid="onb-back"
           onClick={() => (step === 0 ? save(true) : setStep(step - 1))}
-          className="mono inline-flex items-center gap-1.5 border border-zinc-800 px-4 py-2.5 text-[11px] uppercase tracking-wider text-zinc-500 transition-colors hover:border-zinc-600 hover:text-zinc-200"
+          className="mono inline-flex items-center gap-1.5 border border-zinc-800 px-4 py-2.5 text-xs text-zinc-500 transition-colors hover:border-zinc-600 hover:text-zinc-200"
         >
           {step === 0 ? "Skip for now" : <><ArrowLeft size={13} /> Back</>}
         </button>
@@ -262,7 +262,7 @@ export default function Onboarding() {
           data-testid="onb-next"
           disabled={busy}
           onClick={() => (step === steps.length - 1 ? save() : setStep(step + 1))}
-          className="group inline-flex items-center gap-2 border border-indigo-500 bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500 disabled:opacity-50"
+          className="group inline-flex items-center gap-2 border border-primary bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
         >
           {step === steps.length - 1 ? "Save and start" : "Continue"}
           <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />

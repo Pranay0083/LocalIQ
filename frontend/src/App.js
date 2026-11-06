@@ -2,8 +2,8 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ThemeProvider, useTheme } from "next-themes";
 import { Toaster } from "sonner";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
-import { Shell } from "@/components/Shell";
-import Landing from "@/pages/Landing";
+import { Shell } from "@/components/layout/Shell";
+import Landing from "@/pages/landing/Landing";
 import Auth from "@/pages/Auth";
 import Onboarding from "@/pages/Onboarding";
 import Home from "@/pages/Home";
@@ -19,7 +19,7 @@ import Contribute from "@/pages/Contribute";
 
 const Loading = () => (
   <div className="grid min-h-screen place-items-center">
-    <p className="mono text-xs uppercase tracking-[0.3em] text-zinc-600 caret">booting localiq</p>
+    <p className="mono text-xs text-zinc-600 caret">booting localiq</p>
   </div>
 );
 

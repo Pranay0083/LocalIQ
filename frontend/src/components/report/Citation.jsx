@@ -29,7 +29,7 @@ export const CitationDrawer = ({ citations = [], label = "sources", testId }) =>
       <PopoverTrigger asChild>
         <button
           data-testid={testId || "citation-trigger"}
-          className="mono inline-flex items-center gap-1 border border-zinc-800 bg-surface2 px-2 py-[3px] text-[10px] text-zinc-400 transition-colors hover:border-indigo-500/60 hover:text-indigo-300"
+          className="mono inline-flex items-center gap-1 border border-zinc-800 bg-surface2 px-2 py-[3px] text-xs text-zinc-400 transition-colors hover:border-zinc-50/60 hover:text-zinc-50"
         >
           <Info size={11} weight="bold" />
           {citations.length} {label}
@@ -46,23 +46,23 @@ export const CitationDrawer = ({ citations = [], label = "sources", testId }) =>
         <div className="divide-y divide-zinc-900">
           {citations.map((c, i) => (
             <div key={i} className="px-3 py-2.5" data-testid={`citation-item-${i}`}>
-              <p className="text-xs font-medium text-zinc-200">{c.label}</p>
-              <p className="mono mt-0.5 break-words text-xs text-zinc-100">
+              <p className="text-sm font-medium text-zinc-200">{c.label}</p>
+              <p className="mono mt-0.5 break-words text-sm text-zinc-100">
                 {c.value === null || c.value === undefined ? "\u2014" : String(c.value)}
                 {c.unit ? <span className="text-zinc-500"> {c.unit}</span> : null}
               </p>
               <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                 <SourceBadge type={c.source_type} />
-                <span className="mono text-[10px] text-zinc-500">
+                <span className="mono text-xs text-zinc-500">
                   conf: {c.confidence || "n/a"}
                 </span>
                 {c.observed_at ? (
-                  <span className="mono text-[10px] text-zinc-600">{fmtDate(c.observed_at)}</span>
+                  <span className="mono text-xs text-zinc-600">{fmtDate(c.observed_at)}</span>
                 ) : null}
               </div>
-              <p className="mt-1 text-[11px] leading-snug text-zinc-500">{c.source_name}</p>
+              <p className="mt-1 text-sm leading-snug text-zinc-500">{c.source_name}</p>
               {c.note ? (
-                <p className="mt-1 text-[11px] leading-snug text-zinc-500">{c.note}</p>
+                <p className="mt-1 text-sm leading-snug text-zinc-500">{c.note}</p>
               ) : null}
               {c.source_url ? (
                 <a
@@ -70,7 +70,7 @@ export const CitationDrawer = ({ citations = [], label = "sources", testId }) =>
                   target="_blank"
                   rel="noreferrer"
                   data-testid={`citation-link-${i}`}
-                  className="mono mt-1.5 inline-flex items-center gap-1 text-[10px] text-indigo-400 underline-offset-2 hover:underline"
+                  className="mono mt-1.5 inline-flex items-center gap-1 text-xs text-zinc-50 underline-offset-2 hover:underline"
                 >
                   <ArrowSquareOut size={11} /> {hostOf(c.source_url)}
                 </a>

@@ -33,20 +33,20 @@ export default function Auth() {
     }
   };
 
-  const field = "mono w-full border border-zinc-800 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-700 focus:border-indigo-500";
+  const field = "mono w-full border border-zinc-800 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-700 focus:border-zinc-50";
 
   return (
     <div className="grid min-h-screen lg:grid-cols-[1fr_1.1fr]">
       <div className="hidden flex-col justify-between border-r border-zinc-900 px-10 py-10 lg:flex">
         <Link to="/" className="flex items-center gap-2" data-testid="auth-logo">
-          <span className="grid h-6 w-6 place-items-center bg-indigo-600">
+          <span className="grid h-6 w-6 place-items-center bg-primary">
             <ChartLineUp size={14} weight="bold" className="text-white" />
           </span>
-          <span className="font-[Outfit] text-[15px] font-semibold tracking-tight">LocalIQ</span>
+          <span className="text-[15px] font-semibold tracking-tight">LocalIQ</span>
         </Link>
         <div>
-          <p className="overline text-indigo-400">Bengaluru neighbourhood intelligence</p>
-          <h2 className="mt-4 max-w-md font-[Outfit] text-4xl font-light leading-tight tracking-tight text-zinc-100">
+          <p className="overline text-zinc-50">Bengaluru neighbourhood intelligence</p>
+          <h2 className="mt-4 max-w-md text-4xl font-medium leading-tight tracking-tight text-zinc-100">
             The report changes depending on who is reading it.
           </h2>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-zinc-500">
@@ -77,9 +77,9 @@ export default function Auth() {
                 key={m}
                 data-testid={`auth-tab-${m}`}
                 onClick={() => setMode(m)}
-                className={`mono flex-1 py-2.5 text-[11px] uppercase tracking-wider transition-colors ${
-                  mode === m ? "bg-indigo-600 text-white" : "text-zinc-500 hover:text-zinc-200"
-                }`}
+                className={`mono flex-1 py-2.5 text-xs transition-colors ${
+ mode === m ? "bg-primary text-primary-foreground" : "text-zinc-500 hover:text-zinc-200"
+ }`}
               >
                 {m === "login" ? "Sign in" : "Create account"}
               </button>
@@ -128,7 +128,7 @@ export default function Auth() {
             <button
               data-testid="auth-submit"
               disabled={busy}
-              className="group mt-2 inline-flex w-full items-center justify-center gap-2 border border-indigo-500 bg-indigo-600 py-3 text-sm font-medium text-white transition-colors hover:bg-indigo-500 disabled:opacity-50"
+              className="group mt-2 inline-flex w-full items-center justify-center gap-2 border border-primary bg-primary py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
             >
               {busy ? "Working…" : mode === "login" ? "Sign in" : "Create account"}
               <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
@@ -149,7 +149,7 @@ export default function Auth() {
                     setMode("login");
                     setForm({ name: "", email, password: pass });
                   }}
-                  className="mono flex w-full items-center justify-between text-[10px] text-zinc-500 transition-colors hover:text-indigo-300"
+                  className="mono flex w-full items-center justify-between text-xs text-zinc-500 transition-colors hover:text-zinc-50"
                 >
                   <span>{email} / {pass}</span>
                   <span className="text-zinc-700">{note}</span>
