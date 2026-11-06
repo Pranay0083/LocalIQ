@@ -24,7 +24,7 @@ CREDS = {
 
 
 def _resilient_session() -> requests.Session:
-    """Retry transient connect errors - the preview ingress occasionally refuses a connection."""
+    """Retry transient connect errors, so a backend that is still starting does not fail the suite."""
     session = requests.Session()
     session.headers.update({"Content-Type": "application/json"})
     retry = Retry(total=4, connect=4, read=2, backoff_factor=0.8,

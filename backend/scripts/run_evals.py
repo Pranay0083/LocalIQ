@@ -1,7 +1,7 @@
 """CLI: run the golden evaluation and write the report to test_reports/ at the repo root.
 
-    python3 run_evals.py                 # print summary, write dated report
-    python3 run_evals.py --quiet         # write only
+    python scripts/run_evals.py                 # print summary, write dated report
+    python scripts/run_evals.py --quiet         # write only
 """
 import asyncio
 import json
@@ -9,9 +9,12 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from app.evals.runner import run_golden
+BACKEND = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(BACKEND))
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "test_reports"
+from app.evals.runner import run_golden  # noqa: E402
+
+OUT_DIR = BACKEND.parent / "test_reports"
 
 
 async def main():

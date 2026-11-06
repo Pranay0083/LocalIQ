@@ -3,7 +3,7 @@ RUBRIC_DOC = [
      "inputs": "OpenWeather Air Pollution PM2.5 / PM10 / NO2 / SO2 / O3 / CO converted to Indian CPCB sub-indices; worst sub-index wins."},
     {"module": "commute", "formula": "0.55 x metro-distance score (100 at <=800 m, 0 at >=4 km) + 0.25 x saturating(bus stops, k=35) + 0.20 x rail-distance score (100 at <=1.5 km, 0 at >=6 km)",
      "inputs": "OSM metro stations within 6 km, bus stops within 1.2 km, suburban rail stations."},
-    {"module": "safety_day", "formula": "62 baseline + 0.18 x police-proximity score - min(35, 3 x media-reported incidents) +/- corroborated community signal",
+    {"module": "safety_day", "formula": "62 baseline + 0.18 x police-proximity score - min(35, 3 x media-reported incidents)",
      "inputs": "OSM police stations, media-reported incidents over a 12-month window, community fact claims."},
     {"module": "safety_night", "formula": "safety_day - 8 + 0.10 x saturating(late-activity venues, k=25) - 10 if incidents > 6",
      "inputs": "Same as safety_day plus cafe/bar density as a proxy for eyes on the street."},

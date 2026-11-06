@@ -197,8 +197,8 @@ class LensIn(BaseModel):
 
 @router.post("/reports/{report_id}/lens")
 async def switch_lens(report_id: str, payload: LensIn, user: dict = Depends(get_current_user)):
-    """Re-score and re-narrate from the cached dossier. Free: spends no credit and
-    triggers no collection."""
+    """Re-weight and re-narrate for another persona. Spends no credit; reuses every fresh dossier
+    layer and re-collects only layers past their freshness window, then runs the synthesizer again."""
     if payload.persona_key not in PERSONAS:
         raise HTTPException(status_code=400, detail="Unknown persona")
     doc = await db.reports.find_one({"_id": ObjectId(report_id), "user_id": user["id"]})

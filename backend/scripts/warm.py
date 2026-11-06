@@ -2,14 +2,16 @@
 every Bengaluru locality, then metered web-research layers under a budget.
 
 Usage:
-    python warm.py geo          # free layers only, all localities
-    python warm.py web 6        # web research for the 6 least-fresh localities
+    python scripts/warm.py geo          # free layers only, all localities
+    python scripts/warm.py web 6        # web research for the first 6 localities in list order
 """
 import asyncio
 import sys
 import time
+from pathlib import Path
 
-sys.path.insert(0, ".")
+BACKEND = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(BACKEND))
 
 from app.agents import collectors as C  # noqa: E402
 from app.localities import BANGALORE  # noqa: E402

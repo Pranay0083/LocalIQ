@@ -42,7 +42,7 @@ def _ip_hash(request: Request) -> str:
     forwarded = request.headers.get("x-forwarded-for", "")
     raw = forwarded.split(",")[0].strip()
     if not raw:
-        # no proxy header: every request would hash to the ingress IP, so skip the per-IP cap
+        # no proxy header: behind a reverse proxy every request would share its IP, so skip the per-IP cap
         return ""
     return hashlib.sha256(raw.encode()).hexdigest()[:16]
 

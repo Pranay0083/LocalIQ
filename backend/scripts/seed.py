@@ -4,8 +4,8 @@ Only the corpus travels: per-locality dossiers and the city-wide percentile stat
 reports, chats and community posts stay in the database they were created in.
 
 Usage:
-    python seed.py export       # MongoDB -> seed/corpus.json.gz
-    python seed.py import       # seed/corpus.json.gz -> MongoDB (upsert, never deletes)
+    python scripts/seed.py export       # MongoDB -> seed/corpus.json.gz
+    python scripts/seed.py import       # seed/corpus.json.gz -> MongoDB (upsert, never deletes)
 """
 import asyncio
 import gzip
@@ -14,11 +14,12 @@ from pathlib import Path
 
 from bson import json_util
 
-sys.path.insert(0, ".")
+BACKEND = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(BACKEND))
 
 from app.db import db  # noqa: E402
 
-SEED_FILE = Path(__file__).resolve().parent / "seed" / "corpus.json.gz"
+SEED_FILE = BACKEND / "seed" / "corpus.json.gz"
 # collection -> the field that identifies a document across databases
 COLLECTIONS = {"dossiers": "locality_slug", "city_stats": "key"}
 
